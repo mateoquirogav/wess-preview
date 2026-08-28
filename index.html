@@ -7,38 +7,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--crema:#FBF6F0;--crema2:#F4ECE3;--blanco:#fff;--tinta:#241C1F;--gris:#7A6E72;
---linea:#EDE2D8;--carbon:#1E1B1A;--rojo:#FF3B57;--rojo2:#E01E3C;--sol:#FFC94D;--menta:#2ECC8F;
---sombra:0 10px 30px rgba(80,50,40,.09);--sombra2:0 16px 44px rgba(80,50,40,.13)}
+:root{--crema:#F3F3F4;--crema2:#E6E6E9;--blanco:#fff;--tinta:#17171A;--gris:#6C6C73;
+--linea:#DEDEE2;--carbon:#17171A;--rojo:#E01E3C;--rojo2:#B3162F;--gris2:#8E8E96;
+--sombra:0 10px 30px rgba(20,20,25,.07);--sombra2:0 16px 44px rgba(20,20,25,.11)}
 html,body{background:var(--crema);color:var(--tinta);font-family:Nunito,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 body{min-height:100vh;overflow-x:hidden}
 .demo-top{max-width:1180px;margin:0 auto;padding:26px 22px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.demo-top .tag{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--rojo);background:#FFE9EC;border-radius:999px;padding:6px 13px}
+.demo-top .tag{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--rojo);background:#F0E3E6;border-radius:999px;padding:6px 13px}
 .demo-top h1{font-size:15px;font-weight:600;color:var(--gris)}.demo-top h1 b{color:var(--tinta);font-weight:800}
 .pv{position:relative;max-width:1180px;margin:20px auto 54px;padding:0 22px}
 .stage{position:relative;border-radius:34px;overflow:hidden;box-shadow:var(--sombra2);background:
- radial-gradient(700px 420px at 12% 8%, #FFF3E4, transparent 62%),
- radial-gradient(620px 460px at 92% 96%, #FFE6EA, transparent 60%),
- linear-gradient(180deg,#FFFDFA,#F7EFE6)}
-.burbuja{position:absolute;border-radius:50%;pointer-events:none;opacity:.42;animation:flota linear infinite}
-@keyframes flota{0%{transform:translate(0,0) scale(1)}50%{transform:translate(14px,-26px) scale(1.06)}100%{transform:translate(0,0) scale(1)}}
+ radial-gradient(760px 440px at 12% 6%, #FFFFFF, transparent 64%),
+ linear-gradient(180deg,#FAFAFB,#EDEDF0)}
+.burbuja{position:absolute;border-radius:50%;pointer-events:none;opacity:.5;animation:flota linear infinite}
+@keyframes flota{0%{transform:translate(0,0) scale(1)}50%{transform:translate(12px,-22px) scale(1.05)}100%{transform:translate(0,0) scale(1)}}
 .head{position:relative;text-align:center;padding:42px 22px 4px}
-.kick{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--rojo2);background:#FFE9EC;border-radius:999px;padding:8px 16px}
-.kick i{width:7px;height:7px;border-radius:50%;background:var(--rojo);animation:blip 1.6s ease-in-out infinite}
+.kick{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--rojo);border-radius:999px;padding:8px 16px}
+.kick i{width:7px;height:7px;border-radius:50%;background:#fff;animation:blip 1.6s ease-in-out infinite}
 @keyframes blip{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.45);opacity:.5}}
 .head h2{font-size:46px;line-height:1.05;font-weight:900;margin:16px 0 10px;letter-spacing:-.02em}
-.head h2 span{color:var(--rojo);display:inline-block;padding-bottom:3px;background-image:linear-gradient(var(--sol),var(--sol));
+.head h2 span{color:var(--rojo);display:inline-block;padding-bottom:3px;background-image:linear-gradient(var(--crema2),var(--crema2));
  background-repeat:no-repeat;background-position:0 96%;background-size:100% 8px;animation:subraya 3.4s ease-in-out infinite}
 @keyframes subraya{0%,100%{background-size:100% 8px}50%{background-size:100% 13px}}
 .head p{color:var(--gris);font-size:16px;font-weight:600;max-width:540px;margin:0 auto}
 .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);gap:14px;padding:18px 34px 42px;align-items:stretch}
 .viz{position:relative;min-height:580px;border-radius:26px;overflow:hidden;
- background:radial-gradient(ellipse 56% 32% at 50% 97%, rgba(150,120,80,.15), transparent 68%),linear-gradient(180deg,#FFFDF9,#F5EDE3);
- box-shadow:inset 0 -22px 40px rgba(120,95,65,.06), inset 0 1px 0 #fff}
+ background:radial-gradient(ellipse 56% 32% at 50% 97%, rgba(60,60,70,.13), transparent 68%),linear-gradient(180deg,#FFFFFF,#EDEDF1);
+ box-shadow:inset 0 -22px 40px rgba(40,40,50,.05), inset 0 1px 0 #fff}
 #fig{position:absolute;inset:20px 20px 30px;z-index:2;width:calc(100% - 40px);height:calc(100% - 50px)}
-.sombrapiso{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);width:168px;height:18px;border-radius:50%;background:rgba(120,90,60,.14);filter:blur(7px)}
+.sombrapiso{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);width:168px;height:18px;border-radius:50%;background:rgba(40,40,50,.16);filter:blur(7px)}
 .hud{position:absolute;z-index:4;top:14px;left:14px;display:flex;flex-direction:column;gap:7px}
-.chip{background:rgba(255,255,255,.95);border-radius:15px;padding:7px 12px;min-width:106px;box-shadow:0 4px 14px rgba(60,45,30,.08);border:2px solid transparent;transition:border-color .3s,transform .3s}
+.chip{background:rgba(255,255,255,.96);border-radius:15px;padding:7px 12px;min-width:106px;box-shadow:0 4px 14px rgba(30,30,40,.08);border:2px solid transparent;transition:border-color .3s,transform .3s}
 .chip small{display:block;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gris)}
 .chip b{font-size:16px;font-weight:900;font-variant-numeric:tabular-nums;transition:color .3s}
 .chip b i{font-style:normal;font-size:10px;color:var(--gris);font-weight:700;margin-left:1px}
@@ -50,7 +49,7 @@ body{min-height:100vh;overflow-x:hidden}
 .panel{background:var(--blanco);border-radius:28px;padding:30px;box-shadow:var(--sombra2);display:flex;flex-direction:column}
 .steps{display:flex;gap:8px;margin-bottom:22px}
 .steps i{flex:1;height:8px;border-radius:5px;background:var(--crema2);position:relative;overflow:hidden}
-.steps i::after{content:"";position:absolute;inset:0;width:0;border-radius:5px;background:linear-gradient(90deg,var(--sol),var(--rojo));transition:width .55s cubic-bezier(.3,1.2,.4,1)}
+.steps i::after{content:"";position:absolute;inset:0;width:0;border-radius:5px;background:linear-gradient(90deg,var(--gris2),var(--rojo));transition:width .55s cubic-bezier(.3,1.2,.4,1)}
 .steps i.done::after{width:100%}
 .stepnum{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--rojo);margin-bottom:6px}
 .panel h3{font-size:29px;font-weight:900;letter-spacing:-.02em;margin-bottom:5px;line-height:1.15}
@@ -64,7 +63,7 @@ body{min-height:100vh;overflow-x:hidden}
 .opt svg{stroke:var(--gris);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .25s}
 .opt span{font-size:13.5px;font-weight:800;display:block}
 .opt small{font-size:11px;font-weight:700;color:var(--gris);display:block;margin-top:1px}
-.opt.sel{border-color:var(--rojo);background:#FFF7F8}.opt.sel .em{background:#FFE0E5}.opt.sel svg{stroke:var(--rojo)}
+.opt.sel{border-color:var(--rojo);background:#FAF7F8}.opt.sel .em{background:#F3E4E7}.opt.sel svg{stroke:var(--rojo)}
 .val{display:flex;align-items:baseline;gap:7px;margin:4px 0 12px}
 .val b{font-size:52px;font-weight:900;letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:var(--rojo)}
 .val em{font-style:normal;color:var(--gris);font-size:16px;font-weight:800}
@@ -89,16 +88,16 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
 .mset div{background:var(--crema);border-radius:16px;padding:12px 6px}
 .mset small{display:block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gris);margin-bottom:2px}
 .mset b{font-size:18px;font-weight:900;font-variant-numeric:tabular-nums}
-.tonos{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:4px 0 6px}
-.tono{aspect-ratio:1;border-radius:50%;cursor:pointer;border:2px solid rgba(0,0,0,.07);transition:transform .25s cubic-bezier(.2,1.5,.4,1),box-shadow .25s}
-.tono:hover{transform:scale(1.12)}
-.tono.on{transform:scale(1.16);box-shadow:0 0 0 2px var(--blanco),0 0 0 4px var(--tinta)}
-.tonoNom{font-size:12px;font-weight:800;margin-bottom:14px;min-height:16px}
-.tonoNom em{font-style:normal;color:var(--gris);font-weight:700}
-.hint{display:flex;gap:11px;text-align:left;background:#E9FBF3;border-radius:18px;padding:13px 15px;margin-bottom:14px}
-.hint .ic{flex:none;width:28px;height:28px;border-radius:10px;background:var(--menta);display:grid;place-items:center}
+.prendas{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:6px 0 18px}
+.pz{background:var(--crema);border-radius:16px;padding:12px 4px 10px;text-align:center;transition:background .25s,transform .25s}
+.pz:hover{background:var(--crema2);transform:translateY(-3px)}
+.pz svg{display:block;margin:0 auto 6px;stroke:var(--tinta);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.pz b{display:block;font-size:11px;font-weight:800;color:var(--rojo);line-height:1.1}
+.pz small{display:block;font-size:9.5px;font-weight:700;color:var(--gris);margin-top:2px}
+.hint{display:flex;gap:11px;text-align:left;background:var(--crema);border-radius:18px;padding:13px 15px;margin-bottom:14px}
+.hint .ic{flex:none;width:28px;height:28px;border-radius:10px;background:var(--rojo);display:grid;place-items:center}
 .hint svg{stroke:#fff;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-.hint p{font-size:13px;font-weight:700;line-height:1.45;color:#1D6B4E}
+.hint p{font-size:13px;font-weight:700;line-height:1.45;color:var(--tinta)}
 .mini{font-size:12px;font-weight:700;color:var(--gris);margin-top:10px}
 .notas{max-width:1180px;margin:0 auto 70px;padding:0 22px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .nota{background:var(--blanco);border-radius:22px;padding:22px;box-shadow:var(--sombra)}
@@ -202,13 +201,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
           <div><small>Cintura</small><b id="m-cin">84</b></div>
           <div><small>Cadera</small><b id="m-cad">98</b></div>
         </div>
-        <p class="sub" style="margin-bottom:4px;font-size:13px">Probale un color</p>
-        <div class="tonos" id="tonos"></div>
-        <div class="tonoNom" id="tonoNom"></div>
-        <div class="hint">
-          <span class="ic"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
-          <p>Guardamos tu perfil: desde ahora, en <b>cada prenda de Wess</b> vas a ver si te entra y qu&eacute; talle pedir.</p>
-        </div>
+        <div class="prendas" id="prendas"></div>
         <button class="btn pri" style="width:100%" id="go">Ver mis <span id="cant">24</span> prendas</button>
         <p class="mini">Te lleva al cat&aacute;logo ya filtrado con tus medidas.</p>
         <button class="btn gho" id="otra" style="width:100%;margin-top:10px">Cambiar mis medidas</button>
@@ -473,6 +466,15 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     return (+m[1] < 95 && +m[2] < 95 && +m[3] < 95);
   }
 
+  /* la gorra del unisex, en coordenadas de la ilustracion.
+     La cabeza va de y=278 a y=477 con el centro en x=754. */
+  var GORRA = [
+    { f:'#232122', d:'M 693 376 C 695 292 813 292 815 376 Z' },                 /* copa */
+    { f:'#2E2B2A', d:'M 684 374 Q 754 418 824 374 Q 754 394 684 374 Z' },       /* visera */
+    { f:'#1B1918', d:'M 693 366 L 815 366 L 815 378 L 693 378 Z' },             /* banda */
+    { f:'#E01E3C', d:'M 748 300 C 748 292 760 292 760 300 C 760 308 748 308 748 300 Z' } /* boton */
+  ];
+
   var FIG = {}, SVG = document.getElementById('fig');
   ['h','m'].forEach(function(k){
     var origen = document.getElementById(k === 'h' ? 'figH' : 'figM');
@@ -502,6 +504,14 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       var b = v.el.getBBox(), cy = b.y + b.height/2;
       v.prenda = oscuro(v.fill) && b.width > 140 && cy > Y_HOMBRO && cy < Y_CADERA + 80;
     });
+    if (S.sil === 'u'){
+      GORRA.forEach(function(g){
+        var el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        el.setAttribute('fill', g.f);
+        SVG.appendChild(el);
+        vivos.push({ el: el, seg: parsear(g.d), fill: g.f, prenda: false });
+      });
+    }
     gradsVivos = [].slice.call(SVG.querySelectorAll('linearGradient'));
     gradsOrig = gradsVivos.map(function(g){
       return { x1:+g.getAttribute('x1'), y1:+g.getAttribute('y1'),
@@ -571,7 +581,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
         }
       }
       v.el.setAttribute('d', d);
-      if (v.prenda) v.el.setAttribute('fill', TONOS[S.tono].c);
+      if (v.prenda) v.el.setAttribute('fill', '#232122');
     }
     gradsVivos.forEach(function(g, i){
       var o = gradsOrig[i]; if (!o || !o.usa) return;
@@ -626,7 +636,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   }
 
   function confeti(){
-    var viz = document.getElementById('viz'), col = ['#FF3B57','#FFC94D','#2ECC8F','#B79CFF','#FF8FA3'];
+    var viz = document.getElementById('viz'), col = ['#E01E3C','#8E8E96','#17171A','#C7C7CE','#B3162F'];
     for (var i = 0; i < 24; i++){
       (function(i){
         var c = document.createElement('div');
@@ -654,23 +664,27 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     arc.style.strokeDashoffset = 346;
     setTimeout(function(){ arc.style.strokeDashoffset = 346 - 346*(0.42 + r.i*0.09); }, 90);
     document.getElementById('cant').textContent = 14 + r.i*4;
+    pintarPrendas(r.t);
     confeti();
   }
 
-  var cajaTonos = document.getElementById('tonos'), nomTono = document.getElementById('tonoNom');
-  TONOS.forEach(function(t, i){
-    var b = document.createElement('div');
-    b.className = 'tono' + (i === 0 ? ' on' : '');
-    b.style.background = t.c; b.title = t.n;
-    b.addEventListener('click', function(){
-      cajaTonos.querySelectorAll('.tono').forEach(function(x){ x.classList.remove('on'); });
-      b.classList.add('on'); S.tono = i;
-      nomTono.innerHTML = t.n + ' <em>&middot; ' + t.sub + '</em>';
-      pintar();
+  /* las prendas que le entran, con su talle */
+  var PRENDAS = [
+    { n:'Remeras',  d:'M8 6.5 4.5 8.4l1.4 3.1 2-.9V20h8.2V10.6l2 .9 1.4-3.1L16 6.5a4 4 0 0 1-8 0z' },
+    { n:'Buzos',    d:'M7.6 6.2 4 8.2l1.6 3.4 2-.9V20h8.8v-9.3l2 .9L20 8.2l-3.6-2H14a2 2 0 0 1-4 0z M9.2 6.4h5.6' },
+    { n:'Jeans',    d:'M7 4h10l-.6 8.4L15.8 20h-3l-.8-7.2-.8 7.2h-3L7.6 12.4z' },
+    { n:'Camperas', d:'M8 6 4.6 8l1.5 3.2 1.9-.8V20h8V10.4l1.9.8L19.4 8 16 6l-4 1.6z M12 7.6V20' },
+    { n:'Bermudas', d:'M6.5 5h11l-.5 6-.6 8h-3.2L12 12l-1.2 7H7.6L7 11z' }
+  ];
+  var cajaPrendas = document.getElementById('prendas');
+  function pintarPrendas(t){
+    var h = '';
+    PRENDAS.forEach(function(p){
+      h += '<div class="pz"><svg width="26" height="26" viewBox="0 0 24 24"><path d="' + p.d + '"/></svg>' +
+           '<b>' + t + '</b><small>' + p.n + '</small></div>';
     });
-    cajaTonos.appendChild(b);
-  });
-  nomTono.innerHTML = TONOS[0].n + ' <em>&middot; ' + TONOS[0].sub + '</em>';
+    cajaPrendas.innerHTML = h;
+  }
 
   function grupo(id, cb){
     var box = document.getElementById(id);
@@ -701,7 +715,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     S.pes = +this.value; document.getElementById('b-pes').textContent = S.pes; pintar();
   });
 
-  var stage = document.getElementById('stage'), bg = ['#FFD9DE','#FFE9C4','#DDF6EA','#E7DEFF'];
+  var stage = document.getElementById('stage'), bg = ['#E8E8EC','#EFEFF2','#E2E2E7','#F1F1F4'];
   for (var i = 0; i < 8; i++){
     var b = document.createElement('div');
     b.className = 'burbuja';
@@ -715,8 +729,16 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     stage.insertBefore(b, stage.firstChild);
   }
 
+  var hs = location.hash;
+  var sm = hs.match(/sil(h|m|u)/);
+  if (sm){
+    S.sil = sm[1];
+    document.querySelectorAll('#op-sil .opt').forEach(function(o){
+      o.classList.toggle('sel', o.dataset.v === S.sil);
+    });
+  }
   montar();
-  var h = (location.hash.match(/paso(\d)/) || [])[1];
+  var h = (hs.match(/paso(\d)/) || [])[1];
   ir(h ? +h : 0);
 })();
 </script>
