@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wess · Probador Virtual — Vista previa PRAXIS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0B0B0D; --panel:#121214; --line:#25252A;
+  --txt:#F4F4F6; --mut:#8E8E96;
+  --c1:#FF2E4F; --c2:#7A0019; --ok:#22E08A;
+  --glow:0 0 24px rgba(255,46,79,.4);
+}
+html,body{background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;overflow-x:hidden}
+
+.demo-top{max-width:1180px;margin:0 auto;padding:26px 22px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.demo-top .tag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+.demo-top h1{font-size:15px;font-weight:400;color:var(--mut)}
+.demo-top h1 b{color:var(--txt);font-weight:600}
+
+.pv{position:relative;max-width:1180px;margin:22px auto 60px;padding:0 22px}
+.stage{position:relative;border:1px solid var(--line);border-radius:26px;overflow:hidden;background:
+  radial-gradient(900px 500px at 15% 0%, rgba(122,0,25,.16), transparent 60%),
+  radial-gradient(700px 500px at 88% 100%, rgba(255,46,79,.14), transparent 60%),
+  linear-gradient(180deg,#0B0B0D,#07080A)}
+.grid-bg{position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:46px 46px;
+  -webkit-mask-image:radial-gradient(circle at 50% 40%,#000 30%,transparent 78%);
+  mask-image:radial-gradient(circle at 50% 40%,#000 30%,transparent 78%)}
+
+.head{position:relative;text-align:center;padding:46px 22px 6px}
+.kick{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--c1);
+  border:1px solid rgba(255,46,79,.28);background:rgba(255,46,79,.06);border-radius:999px;padding:7px 14px}
+.kick i{width:6px;height:6px;border-radius:50%;background:var(--c1);box-shadow:var(--glow);animation:blip 1.8s linear infinite}
+@keyframes blip{0%,100%{opacity:1}50%{opacity:.25}}
+.head h2{font-family:"Barlow Condensed",Inter,sans-serif;font-size:62px;line-height:.95;font-weight:700;text-transform:uppercase;margin:14px 0 12px;letter-spacing:.01em}
+.head h2 span{background:linear-gradient(90deg,var(--c1),var(--c2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.head p{color:var(--mut);font-size:15px;max-width:520px;margin:0 auto}
+
+.wrap{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:10px;padding:26px 34px 44px;align-items:center}
+
+.viz{position:relative;height:560px;display:flex;align-items:center;justify-content:center}
+.pod{position:absolute;bottom:52px;left:50%;transform:translateX(-50%);width:290px;height:70px;border-radius:50%;
+  background:radial-gradient(ellipse at center, rgba(255,46,79,.30), rgba(122,0,25,.10) 45%, transparent 70%);
+  filter:blur(2px);animation:pod 4.6s ease-in-out infinite}
+@keyframes pod{0%,100%{opacity:.55;transform:translateX(-50%) scale(1)}50%{opacity:.9;transform:translateX(-50%) scale(1.06)}}
+.ring{position:absolute;left:50%;bottom:60px;transform:translateX(-50%) rotateX(74deg);border:1px solid rgba(255,46,79,.35);border-radius:50%;animation:pulse 3.4s ease-out infinite}
+.ring.b{animation-delay:1.15s}.ring.c{animation-delay:2.3s}
+@keyframes pulse{0%{width:90px;height:90px;opacity:.85}100%{width:330px;height:330px;opacity:0}}
+svg.man{position:relative;z-index:2;width:100%;max-width:400px;height:520px;overflow:visible}
+.scan{position:absolute;z-index:3;left:8%;right:8%;height:130px;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(255,46,79,.13) 45%,rgba(255,46,79,.30) 50%,rgba(255,46,79,.13) 55%,transparent);
+  animation:scan 3.8s cubic-bezier(.5,0,.5,1) infinite}
+@keyframes scan{0%{top:-6%;opacity:0}12%{opacity:1}88%{opacity:1}100%{top:92%;opacity:0}}
+.spark{position:absolute;z-index:1;width:3px;height:3px;border-radius:50%;background:var(--c1);opacity:.5;box-shadow:0 0 8px var(--c1);animation:rise linear infinite}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:.7}100%{transform:translateY(-340px);opacity:0}}
+
+.hud{position:absolute;z-index:4;top:14px;left:2px;display:flex;flex-direction:column;gap:8px}
+.chip{border:1px solid var(--line);background:rgba(12,14,18,.78);backdrop-filter:blur(6px);border-radius:12px;padding:8px 12px;min-width:118px;transition:border-color .3s,box-shadow .3s}
+.chip small{display:block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-bottom:2px}
+.chip b{font-size:17px;font-weight:600;font-variant-numeric:tabular-nums;transition:color .3s}
+.chip b em{font-style:normal;font-size:11px;color:var(--mut);margin-left:2px}
+.chip.on{border-color:rgba(255,46,79,.5);box-shadow:0 0 0 1px rgba(255,46,79,.18),0 0 22px rgba(255,46,79,.15)}
+.chip.on b{color:var(--c1)}
+
+.panel{background:rgba(16,19,24,.72);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:22px;padding:30px}
+.steps{display:flex;gap:6px;margin-bottom:24px}
+.steps i{flex:1;height:3px;border-radius:2px;background:#1E1E22;position:relative;overflow:hidden}
+.steps i::after{content:"";position:absolute;inset:0;width:0;background:linear-gradient(90deg,var(--c1),var(--c2));transition:width .5s ease}
+.steps i.done::after{width:100%}
+.stepnum{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--c1);margin-bottom:8px}
+.panel h3{font-family:"Barlow Condensed",Inter,sans-serif;font-size:31px;font-weight:600;text-transform:uppercase;letter-spacing:.01em;margin-bottom:6px}
+.panel .sub{color:var(--mut);font-size:13.5px;margin-bottom:22px}
+.pane{display:none}.pane.on{display:block;animation:fade .45s ease both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.opt{border:1px solid var(--line);background:#141416;border-radius:14px;padding:16px 10px;text-align:center;cursor:pointer;transition:border-color .25s,background .25s,box-shadow .25s}
+.opt:hover{border-color:#3A3A42}
+.opt svg{display:block;margin:0 auto 8px;stroke:var(--mut);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:stroke .25s}
+.opt span{font-size:13px;font-weight:500;display:block}
+.opt small{font-size:11px;color:var(--mut);display:block;margin-top:2px}
+.opt.sel{border-color:var(--c1);background:rgba(255,46,79,.07);box-shadow:0 0 0 1px rgba(255,46,79,.2)}
+.opt.sel svg{stroke:var(--c1)}
+
+.val{display:flex;align-items:baseline;gap:6px;margin:6px 0 14px}
+.val b{font-size:44px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+  background:linear-gradient(90deg,var(--c1),var(--c2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.val em{font-style:normal;color:var(--mut);font-size:15px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:3px;background:#1E1E22;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;cursor:pointer;
+  background:linear-gradient(135deg,var(--c1),var(--c2));border:3px solid #0B0B0D;box-shadow:0 0 0 1px rgba(255,46,79,.5),0 0 18px rgba(255,46,79,.55)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;border:3px solid #0B0B0D;background:#FF2E4F;cursor:pointer}
+.scale{display:flex;justify-content:space-between;font-size:11px;color:var(--mut);margin-top:8px}
+
+.nav{display:flex;gap:10px;margin-top:26px;align-items:center}
+.btn{border:0;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;letter-spacing:.02em;border-radius:12px;padding:14px 24px;transition:filter .25s,box-shadow .25s,opacity .25s}
+.btn.pri{color:#FFFFFF;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 8px 30px rgba(255,46,79,.22);flex:1}
+.btn.pri:hover{filter:brightness(1.1);box-shadow:0 8px 38px rgba(255,46,79,.4)}
+.btn.gho{background:transparent;color:var(--mut);border:1px solid var(--line)}
+.btn.gho:hover{color:var(--txt);border-color:#3A3A42}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+
+.res{text-align:center}
+.badge{position:relative;width:150px;height:150px;margin:4px auto 18px;display:grid;place-items:center}
+.badge svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.badge .tal{font-family:"Barlow Condensed",Inter,sans-serif;font-size:62px;font-weight:700;letter-spacing:0;
+  background:linear-gradient(135deg,var(--c1),var(--c2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.badge .tl{position:absolute;bottom:18px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.res h3{font-family:"Barlow Condensed",Inter,sans-serif;font-size:34px;text-transform:uppercase;margin-bottom:8px}
+.mset{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.mset div{border:1px solid var(--line);background:#141416;border-radius:12px;padding:12px 6px}
+.mset small{display:block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-bottom:3px}
+.mset b{font-size:16px;font-variant-numeric:tabular-nums}
+.hint{display:flex;gap:10px;text-align:left;border:1px solid rgba(34,224,138,.28);background:rgba(34,224,138,.06);border-radius:14px;padding:13px 15px;margin-bottom:18px}
+.hint svg{flex:none;stroke:var(--ok);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-top:1px}
+.hint p{font-size:12.5px;line-height:1.5;color:#D6D6DC}
+.hint p b{color:var(--ok);font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#141416;text-align:left}
+.card .ph{height:88px;position:relative;overflow:hidden;background:linear-gradient(150deg,#1C1C20,#101012)}
+.card .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.07) 50%,transparent 65%);animation:shine 3.4s linear infinite}
+@keyframes shine{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
+.card .ph i{position:absolute;z-index:2;top:7px;left:7px;font-style:normal;font-size:9px;font-weight:600;letter-spacing:.06em;padding:3px 7px;border-radius:6px;background:rgba(34,224,138,.16);color:var(--ok);border:1px solid rgba(34,224,138,.3)}
+.card p{font-size:11.5px;padding:9px 10px 3px;color:#D6D6DC}
+.card b{display:block;font-size:13px;padding:0 10px 11px}
+.mini{font-size:11.5px;color:var(--mut);margin-top:12px}
+
+.notes{max-width:1180px;margin:0 auto 70px;padding:0 22px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.note{border:1px solid var(--line);border-radius:16px;padding:20px;background:linear-gradient(180deg,#121214,#0B0B0D)}
+.note h4{font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.note h4 i{font-style:normal;width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:11px;font-weight:700;color:#FFFFFF;background:linear-gradient(135deg,var(--c1),var(--c2))}
+.note p{font-size:12.5px;line-height:1.6;color:var(--mut)}
+.note p b{color:#D6D6DC;font-weight:500}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;padding:10px 16px 34px}
+  .viz{height:420px}svg.man{height:390px}
+  .head h2{font-size:40px}.head{padding:34px 16px 0}
+  .panel{padding:22px}
+  .hud{top:2px;left:0}.chip{min-width:96px;padding:6px 10px}.chip b{font-size:15px}
+  .notes{grid-template-columns:1fr}
+  .card .ph{height:66px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="demo-top">
+  <span class="tag">Vista previa</span>
+  <h1><b>Wess Indumentaria</b> · Probador Virtual — bloque para la home</h1>
+</div>
+
+<section class="pv">
+ <div class="stage">
+  <div class="grid-bg"></div>
+
+  <div class="head">
+    <span class="kick"><i></i>Encontrá tu talle en 20 segundos</span>
+    <h2>Probate la ropa <span>antes de comprarla</span></h2>
+    <p>Cargá tus medidas y te decimos qué talle pedir en cada prenda de Wess. Sin cambios, sin devoluciones, sin ir al local.</p>
+  </div>
+
+  <div class="wrap">
+
+    <div class="viz" id="viz">
+      <div class="pod"></div>
+      <div class="ring"></div><div class="ring b"></div><div class="ring c"></div>
+      <div class="scan"></div>
+      <div class="hud">
+        <div class="chip" id="c-alt"><small>Altura</small><b><span id="v-alt">175</span><em>cm</em></b></div>
+        <div class="chip" id="c-pes"><small>Peso</small><b><span id="v-pes">72</span><em>kg</em></b></div>
+        <div class="chip" id="c-pec"><small>Pecho</small><b><span id="v-pec">96</span><em>cm</em></b></div>
+        <div class="chip" id="c-cin"><small>Cintura</small><b><span id="v-cin">80</span><em>cm</em></b></div>
+      </div>
+      <svg class="man" viewBox="0 0 400 640" id="man" aria-hidden="true">
+        <defs>
+          <linearGradient id="gskin" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FF2E4F" stop-opacity=".30"/>
+            <stop offset="100%" stop-color="#7A0019" stop-opacity=".26"/>
+          </linearGradient>
+          <linearGradient id="gline" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#FF4D6A"/>
+          </linearGradient>
+          <filter id="soft" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="4.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g id="rig" filter="url(#soft)">
+          <path id="silueta" fill="url(#gskin)" stroke="url(#gline)" stroke-width="1.5" stroke-linejoin="round"/>
+          <g id="mesh" stroke="#FFE3E7" stroke-width=".9" fill="none" opacity=".55" stroke-linecap="round"></g>
+          <ellipse id="cabeza" cx="200" cy="62" rx="25" ry="29" fill="url(#gskin)" stroke="url(#gline)" stroke-width="1.5"/>
+          <g id="cotas"></g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="panel">
+      <div class="steps"><i id="s0"></i><i id="s1"></i><i id="s2"></i><i id="s3"></i><i id="s4"></i></div>
+
+      <div class="pane on" data-step="0">
+        <div class="stepnum">Paso 1 de 4</div>
+        <h3>¿Para quién buscamos?</h3>
+        <p class="sub">Cambia la horma y la tabla de medidas que usamos.</p>
+        <div class="opts" id="op-gen">
+          <div class="opt" data-v="f"><svg width="30" height="30" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.6"/><path d="M12 8v5M8.5 20l1.6-6.2h3.8L15.5 20M9.6 13.8H14.4"/></svg><span>Mujer</span></div>
+          <div class="opt sel" data-v="m"><svg width="30" height="30" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.6"/><path d="M8.6 9.4h6.8L16 15h-2v5h-4v-5H8z"/></svg><span>Hombre</span></div>
+          <div class="opt" data-v="u"><svg width="30" height="30" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.6"/><path d="M9 9.6h6l.8 5.4h-1.9V20h-3.8v-5H8.2z"/></svg><span>Unisex</span></div>
+        </div>
+      </div>
+
+      <div class="pane" data-step="1">
+        <div class="stepnum">Paso 2 de 4</div>
+        <h3>¿Cuánto medís?</h3>
+        <p class="sub">Movelo y mirá cómo cambia tu silueta a la izquierda.</p>
+        <div class="val"><b id="b-alt">175</b><em>cm</em></div>
+        <input type="range" id="r-alt" min="148" max="205" value="175">
+        <div class="scale"><span>1,48 m</span><span>2,05 m</span></div>
+      </div>
+
+      <div class="pane" data-step="2">
+        <div class="stepnum">Paso 3 de 4</div>
+        <h3>¿Cuánto pesás?</h3>
+        <p class="sub">Con esto calculamos tu contorno de pecho y de cintura.</p>
+        <div class="val"><b id="b-pes">72</b><em>kg</em></div>
+        <input type="range" id="r-pes" min="40" max="145" value="72">
+        <div class="scale"><span>40 kg</span><span>145 kg</span></div>
+      </div>
+
+      <div class="pane" data-step="3">
+        <div class="stepnum">Paso 4 de 4</div>
+        <h3>¿Cómo te gusta que te quede?</h3>
+        <p class="sub">Dos personas del mismo cuerpo no piden el mismo talle.</p>
+        <div class="opts" id="op-fit">
+          <div class="opt" data-v="-1"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M8.4 3.5h7.2l-1 5 1.5 12H7.9l1.5-12z"/></svg><span>Ajustado</span><small>al cuerpo</small></div>
+          <div class="opt sel" data-v="0"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M7 3.5h10l-1.3 5.2L17 20.5H7l1.3-11.8z"/></svg><span>Normal</span><small>como viene</small></div>
+          <div class="opt" data-v="1"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5.5 4h13l-1.8 5.6L18 21H6l1.3-11.4z"/></svg><span>Oversize</span><small>suelto</small></div>
+        </div>
+      </div>
+
+      <div class="pane res" data-step="4">
+        <div class="badge">
+          <svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="66" fill="none" stroke="#1E1E22" stroke-width="7"/>
+            <circle id="arc" cx="75" cy="75" r="66" fill="none" stroke="url(#gline)" stroke-width="7" stroke-linecap="round" stroke-dasharray="415" stroke-dashoffset="415" style="transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)"/></svg>
+          <span class="tal" id="talle">M</span><span class="tl">Tu talle</span>
+        </div>
+        <h3>Listo, sos talle <span id="talle2">M</span></h3>
+        <p class="sub" id="res-sub">Según tus medidas y el calce que elegiste.</p>
+        <div class="mset">
+          <div><small>Pecho</small><b id="m-pec">96</b></div>
+          <div><small>Cintura</small><b id="m-cin">80</b></div>
+          <div><small>Cadera</small><b id="m-cad">98</b></div>
+        </div>
+        <div class="hint">
+          <svg width="17" height="17" viewBox="0 0 24 24"><path d="M12 2.5 3.5 6v6.2c0 5 3.6 8.4 8.5 9.3 4.9-.9 8.5-4.3 8.5-9.3V6z"/><path d="M8.8 12.2l2.3 2.3 4.3-4.6"/></svg>
+          <p>Guardamos tu perfil. Desde ahora, en <b>cada producto de la tienda</b> vas a ver si te entra y qué talle pedir.</p>
+        </div>
+        <div class="cards" id="cards"></div>
+        <button class="btn pri" style="width:100%" id="go">Ver mis <span id="cant">24</span> prendas</button>
+        <p class="mini">Te lleva al catálogo ya filtrado con tus medidas.</p>
+        <button class="btn gho" id="otra" style="width:100%;margin-top:10px">Cambiar mis medidas</button>
+      </div>
+
+      <div class="nav" id="nav">
+        <button class="btn gho" id="back" disabled>Atrás</button>
+        <button class="btn pri" id="next">Siguiente</button>
+      </div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<div class="notes">
+  <div class="note"><h4><i>1</i>Dónde vive</h4><p>Bloque inyectado desde el <b>Footer</b> del tema <b>morelia</b>, anclado a un bloque nativo de la home. Convive con los 9 módulos PRAXIS ya vivos en la tienda.</p></div>
+  <div class="note"><h4><i>2</i>De dónde salen los talles</h4><p>Un <b>JSON propio</b> (nube PRAXIS) armado desde el CSV de las 951 prendas de Wess, con las medidas reales de cada talle. Tiendanube no lo puede borrar ni reformatear.</p></div>
+  <div class="note"><h4><i>3</i>A dónde lo manda</h4><p>Al <b>filtro por talle nativo</b> (<code>?Talle=M</code>), el mismo que Wess ya usa en Línea Teens. No se crea ninguna categoría nueva ni aparece nada en el menú.</p></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ estado ============ */
+  var S = { gen:"m", alt:175, pes:72, fit:0, step:0 };
+  var MAXSTEP = 4;
+
+  /* ============ anatomia base (mitad de ancho, en px del viewBox) ============ */
+  var BASE = {
+    m:{ hombro:54, pecho:46, cintura:37, cadera:43, muslo:23, pantorrilla:15, tobillo:9, cabezaRx:25 },
+    f:{ hombro:45, pecho:41, cintura:31, cadera:47, muslo:24, pantorrilla:14, tobillo:8.5, cabezaRx:23 },
+    u:{ hombro:50, pecho:44, cintura:34, cadera:45, muslo:23.5,pantorrilla:14.5,tobillo:8.7, cabezaRx:24 }
+  };
+  var Y = { hombro:118, pecho:180, cintura:258, cadera:322, muslo:400, rodilla:456, pantorrilla:508, tobillo:590 };
+  var CX = 200;
+
+  /* valores animados (se interpolan hacia el objetivo) */
+  var cur = { esc:1, k:1, hombro:54, pecho:46, cintura:37, cadera:43, muslo:23, pantorrilla:15, tobillo:9, cabezaRx:25 };
+  var tgt = Object.assign({}, cur);
+
+  function calcular(){
+    var b = BASE[S.gen];
+    /* factor de volumen: peso relativo al esperado para esa altura */
+    var esperado = (S.alt - 100) * 0.92;
+    var k = Math.pow(S.pes / esperado, 0.62);
+    k = Math.max(0.74, Math.min(1.62, k));
+    tgt.k = k;
+    tgt.esc = 0.80 + (S.alt - 148) / 57 * 0.30;          /* alto del cuerpo */
+    tgt.hombro      = b.hombro      * (1 + (k-1)*0.55);
+    tgt.pecho       = b.pecho       * (1 + (k-1)*1.00);
+    tgt.cintura     = b.cintura     * (1 + (k-1)*1.35);
+    tgt.cadera      = b.cadera      * (1 + (k-1)*1.05);
+    tgt.muslo       = b.muslo       * (1 + (k-1)*0.95);
+    tgt.pantorrilla = b.pantorrilla * (1 + (k-1)*0.70);
+    tgt.tobillo     = b.tobillo     * (1 + (k-1)*0.40);
+    tgt.cabezaRx    = b.cabezaRx;
+  }
+
+  /* medidas humanas en cm derivadas del cuerpo */
+  function medidas(){
+    var esperado = (S.alt - 100) * 0.92;
+    var k = Math.max(0.74, Math.min(1.62, Math.pow(S.pes/esperado, 0.62)));
+    var f = (S.gen === "f");
+    var pecho   = Math.round((f ? 84 : 94) * k + (S.alt - 170) * 0.18);
+    var cintura = Math.round((f ? 68 : 80) * Math.pow(k, 1.35) + (S.alt - 170) * 0.12);
+    var cadera  = Math.round((f ? 95 : 95) * Math.pow(k, 0.95) + (S.alt - 170) * 0.15);
+    return { pecho:pecho, cintura:cintura, cadera:cadera };
+  }
+
+  /* ============ geometria: ancho del cuerpo a cualquier altura ============ */
+  function lerp(a,b,t){ return a + (b-a)*t; }
+  function suave(t){ return t*t*(3-2*t); }
+
+  function anchoTorso(y, c){
+    var pts = [
+      [Y.hombro,  c.hombro],
+      [Y.pecho,   c.pecho],
+      [Y.cintura, c.cintura],
+      [Y.cadera,  c.cadera]
+    ];
+    if (y <= pts[0][0]) return pts[0][1];
+    if (y >= pts[3][0]) return pts[3][1];
+    for (var i=0;i<pts.length-1;i++){
+      if (y >= pts[i][0] && y <= pts[i+1][0]){
+        var t = (y - pts[i][0]) / (pts[i+1][0] - pts[i][0]);
+        return lerp(pts[i][1], pts[i+1][1], suave(t));
+      }
+    }
+    return c.cintura;
+  }
+  function anchoPierna(y, c){
+    var pts = [
+      [Y.cadera,      c.muslo*1.06],
+      [Y.muslo,       c.muslo],
+      [Y.rodilla,     c.pantorrilla*1.12],
+      [Y.pantorrilla, c.pantorrilla],
+      [Y.tobillo,     c.tobillo]
+    ];
+    if (y <= pts[0][0]) return pts[0][1];
+    if (y >= pts[4][0]) return pts[4][1];
+    for (var i=0;i<pts.length-1;i++){
+      if (y >= pts[i][0] && y <= pts[i+1][0]){
+        var t = (y - pts[i][0]) / (pts[i+1][0] - pts[i][0]);
+        return lerp(pts[i][1], pts[i+1][1], suave(t));
+      }
+    }
+    return c.tobillo;
+  }
+
+  var silueta = document.getElementById("silueta");
+  var mesh    = document.getElementById("mesh");
+  var cabeza  = document.getElementById("cabeza");
+  var rig     = document.getElementById("rig");
+  var cotas   = document.getElementById("cotas");
+
+  function dibujar(){
+    var c = cur, d = [], y, w, i;
+
+    /* --- torso: lado derecho bajando, lado izquierdo subiendo --- */
+    d.push("M " + (CX + c.hombro).toFixed(1) + " " + Y.hombro);
+    for (y = Y.hombro; y <= Y.cadera; y += 6){
+      w = anchoTorso(y, c);
+      d.push("L " + (CX + w).toFixed(1) + " " + y);
+    }
+    /* --- pierna derecha --- */
+    var sep = c.cadera * 0.46;
+    for (y = Y.cadera; y <= Y.tobillo; y += 8){
+      w = anchoPierna(y, c);
+      d.push("L " + (CX + sep + w).toFixed(1) + " " + y);
+    }
+    d.push("L " + (CX + sep - anchoPierna(Y.tobillo,c)).toFixed(1) + " " + Y.tobillo);
+    for (y = Y.tobillo; y >= Y.cadera; y -= 8){
+      w = anchoPierna(y, c);
+      d.push("L " + (CX + sep - w).toFixed(1) + " " + y);
+    }
+    /* --- entrepierna --- */
+    d.push("L " + CX + " " + (Y.cadera + 34).toFixed(1));
+    /* --- pierna izquierda --- */
+    for (y = Y.cadera; y <= Y.tobillo; y += 8){
+      w = anchoPierna(y, c);
+      d.push("L " + (CX - sep + w).toFixed(1) + " " + y);
+    }
+    d.push("L " + (CX - sep - anchoPierna(Y.tobillo,c)).toFixed(1) + " " + Y.tobillo);
+    for (y = Y.tobillo; y >= Y.cadera; y -= 8){
+      w = anchoPierna(y, c);
+      d.push("L " + (CX - sep - w).toFixed(1) + " " + y);
+    }
+    /* --- torso lado izquierdo subiendo --- */
+    for (y = Y.cadera; y >= Y.hombro; y -= 6){
+      w = anchoTorso(y, c);
+      d.push("L " + (CX - w).toFixed(1) + " " + y);
+    }
+    /* --- hombros redondeados y cuello --- */
+    var cuelloW = 10 + c.k*2.4, cuelloY = Y.hombro - 34;
+    d.push("C " + (CX - c.hombro*0.92).toFixed(1) + " " + (Y.hombro-14) + " " +
+                  (CX - c.hombro*0.60).toFixed(1) + " " + (Y.hombro-21) + " " +
+                  (CX - cuelloW).toFixed(1) + " " + (Y.hombro-22));
+    d.push("L " + (CX - cuelloW*0.86).toFixed(1) + " " + cuelloY);
+    d.push("L " + (CX + cuelloW*0.86).toFixed(1) + " " + cuelloY);
+    d.push("L " + (CX + cuelloW).toFixed(1) + " " + (Y.hombro-22));
+    d.push("C " + (CX + c.hombro*0.60).toFixed(1) + " " + (Y.hombro-21) + " " +
+                  (CX + c.hombro*0.92).toFixed(1) + " " + (Y.hombro-14) + " " +
+                  (CX + c.hombro).toFixed(1) + " " + Y.hombro);
+    d.push("Z");
+
+    /* --- brazos (pegados al cuerpo) --- */
+    var bx = c.hombro - 2, bw = 8.5 * (0.72 + c.k*0.34);
+    var brazo = function(sig){
+      var x0 = CX + sig*bx;
+      return "M " + (x0).toFixed(1) + " " + (Y.hombro+2) +
+             " C " + (x0 + sig*bw*1.5).toFixed(1) + " " + (Y.pecho) +
+             " "   + (x0 + sig*bw*0.9).toFixed(1) + " " + (Y.cintura+20) +
+             " "   + (x0 - sig*bw*0.2).toFixed(1) + " " + (Y.cadera+18) +
+             " L " + (x0 - sig*(bw*1.4)).toFixed(1) + " " + (Y.cadera+16) +
+             " C " + (x0 - sig*bw*0.6).toFixed(1) + " " + (Y.cintura+18) +
+             " "   + (x0 - sig*bw*0.2).toFixed(1) + " " + (Y.pecho) +
+             " "   + (x0 - sig*bw*0.9).toFixed(1) + " " + (Y.hombro+4) + " Z";
+    };
+    silueta.setAttribute("d", d.join(" ") + " " + brazo(1) + " " + brazo(-1));
+
+    /* --- malla de escaneo: elipses horizontales + eje central --- */
+    var m = "";
+    for (y = Y.hombro - 6; y <= Y.cadera; y += 15){
+      w = anchoTorso(y, c) + (y < Y.cintura ? bw*1.1 : bw*0.4);
+      m += '<ellipse cx="200" cy="'+y+'" rx="'+w.toFixed(1)+'" ry="'+(w*0.16).toFixed(1)+'"/>';
+    }
+    for (y = Y.cadera + 16; y <= Y.tobillo; y += 16){
+      w = anchoPierna(y, c);
+      m += '<ellipse cx="'+(CX+sep)+'" cy="'+y+'" rx="'+w.toFixed(1)+'" ry="'+(w*0.34).toFixed(1)+'"/>';
+      m += '<ellipse cx="'+(CX-sep)+'" cy="'+y+'" rx="'+w.toFixed(1)+'" ry="'+(w*0.34).toFixed(1)+'"/>';
+    }
+    m += '<line x1="200" y1="'+(Y.hombro-20)+'" x2="200" y2="'+(Y.cadera+30)+'" opacity=".55"/>';
+    mesh.innerHTML = m;
+
+    cabeza.setAttribute("rx", c.cabezaRx.toFixed(1));
+    cabeza.setAttribute("ry", (c.cabezaRx*1.14).toFixed(1));
+    cabeza.setAttribute("cy", (Y.hombro - 34 - c.cabezaRx*1.14 + 9).toFixed(1));
+
+    /* escala global por altura, anclada al piso */
+    rig.setAttribute("transform", "translate(0," + (Y.tobillo*(1-cur.esc)).toFixed(1) + ") scale(1," + cur.esc.toFixed(3) + ")");
+
+    /* --- cotas activas segun el paso --- */
+    var co = "";
+    if (S.step === 1){ co = cotaV(); }
+    if (S.step === 2 || S.step === 4){ co = cotaH(Y.pecho, anchoTorso(Y.pecho,c)+bw, "PECHO") + cotaH(Y.cintura, anchoTorso(Y.cintura,c)+bw*.5, "CINTURA"); }
+    cotas.innerHTML = co;
+  }
+
+  function cotaH(y, w, txt){
+    var x1 = CX - w - 16, x2 = CX + w + 16;
+    return '<g opacity=".9">'+
+      '<line x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+y+'" stroke="#FF2E4F" stroke-width="1" stroke-dasharray="4 4"/>'+
+      '<circle cx="'+x1+'" cy="'+y+'" r="2.6" fill="#FF2E4F"/><circle cx="'+x2+'" cy="'+y+'" r="2.6" fill="#FF2E4F"/>'+
+      '<text x="'+(x2+9)+'" y="'+(y+3.5)+'" fill="#FFD9DE" font-size="10" font-family="Barlow Condensed,sans-serif" letter-spacing="1.4">'+txt+'</text></g>';
+  }
+  function cotaV(){
+    var x = CX + 118;
+    return '<g opacity=".9">'+
+      '<line x1="'+x+'" y1="28" x2="'+x+'" y2="'+Y.tobillo+'" stroke="#FF2E4F" stroke-width="1" stroke-dasharray="4 4"/>'+
+      '<line x1="'+(x-7)+'" y1="28" x2="'+(x+7)+'" y2="28" stroke="#FF2E4F" stroke-width="1.6"/>'+
+      '<line x1="'+(x-7)+'" y1="'+Y.tobillo+'" x2="'+(x+7)+'" y2="'+Y.tobillo+'" stroke="#FF2E4F" stroke-width="1.6"/>'+
+      '<text x="'+(x+12)+'" y="310" fill="#FFD9DE" font-size="11" font-family="Barlow Condensed,sans-serif" letter-spacing="1.4">'+S.alt+' cm</text></g>';
+  }
+
+  /* ============ loop de interpolacion (el cuerpo crece, no salta) ============ */
+  function tick(){
+    var listo = true, kx;
+    for (kx in tgt){
+      if (Math.abs(tgt[kx] - cur[kx]) > 0.02){ cur[kx] += (tgt[kx] - cur[kx]) * 0.16; listo = false; }
+      else cur[kx] = tgt[kx];
+    }
+    dibujar();
+    requestAnimationFrame(tick);
+  }
+
+  /* ============ particulas ============ */
+  var viz = document.getElementById("viz");
+  for (var p=0; p<16; p++){
+    var s = document.createElement("div");
+    s.className = "spark";
+    s.style.left = (18 + Math.random()*64) + "%";
+    s.style.bottom = (12 + Math.random()*18) + "%";
+    s.style.animationDuration = (4.5 + Math.random()*4) + "s";
+    s.style.animationDelay = (-Math.random()*8) + "s";
+    viz.appendChild(s);
+  }
+
+  /* ============ HUD ============ */
+  var chips = { alt:document.getElementById("c-alt"), pes:document.getElementById("c-pes"), pec:document.getElementById("c-pec"), cin:document.getElementById("c-cin") };
+  function hud(){
+    var m = medidas();
+    document.getElementById("v-alt").textContent = S.alt;
+    document.getElementById("v-pes").textContent = S.pes;
+    document.getElementById("v-pec").textContent = m.pecho;
+    document.getElementById("v-cin").textContent = m.cintura;
+    chips.alt.classList.toggle("on", S.step === 1);
+    chips.pes.classList.toggle("on", S.step === 2);
+    chips.pec.classList.toggle("on", S.step === 2 || S.step === 4);
+    chips.cin.classList.toggle("on", S.step === 2 || S.step === 4);
+  }
+
+  /* ============ talle ============ */
+  var ESCALA = ["XS","S","M","L","XL","XXL","3XL"];
+  function talle(){
+    var m = medidas(), i;
+    var p = m.pecho + (S.gen === "f" ? 6 : 0);   /* la tabla femenina corre */
+    if      (p < 88)  i = 0;
+    else if (p < 94)  i = 1;
+    else if (p < 100) i = 2;
+    else if (p < 107) i = 3;
+    else if (p < 115) i = 4;
+    else if (p < 125) i = 5;
+    else              i = 6;
+    i = Math.max(0, Math.min(6, i + S.fit));
+    return { t: ESCALA[i], i: i, m: m };
+  }
+
+  /* ============ pasos ============ */
+  var panes = document.querySelectorAll(".pane");
+  var bBack = document.getElementById("back"), bNext = document.getElementById("next"), nav = document.getElementById("nav");
+
+  function ir(n){
+    S.step = Math.max(0, Math.min(MAXSTEP, n));
+    for (var i=0;i<panes.length;i++) panes[i].classList.toggle("on", +panes[i].dataset.step === S.step);
+    for (var s=0;s<5;s++) document.getElementById("s"+s).classList.toggle("done", s <= S.step);
+    bBack.disabled = (S.step === 0);
+    bNext.textContent = (S.step === 3) ? "Ver mi talle" : "Siguiente";
+    nav.style.display = (S.step === MAXSTEP) ? "none" : "flex";
+    if (S.step === MAXSTEP) resultado();
+    hud(); calcular();
+  }
+
+  function resultado(){
+    var r = talle();
+    document.getElementById("talle").textContent = r.t;
+    document.getElementById("talle2").textContent = r.t;
+    document.getElementById("m-pec").textContent = r.m.pecho;
+    document.getElementById("m-cin").textContent = r.m.cintura;
+    document.getElementById("m-cad").textContent = r.m.cadera;
+    var fitTxt = S.fit < 0 ? "bien al cuerpo" : (S.fit > 0 ? "suelto y oversize" : "con calce normal");
+    document.getElementById("res-sub").textContent = "Con " + S.alt + " cm y " + S.pes + " kg, y porque te gusta " + fitTxt + ".";
+    var arc = document.getElementById("arc");
+    arc.style.strokeDashoffset = 415;
+    setTimeout(function(){ arc.style.strokeDashoffset = 415 - 415*(0.42 + r.i*0.09); }, 80);
+
+    var nombres = [["Pantalón baggy","Promo 2x $89.990"],["Remera oversize","Algodón peinado"],["Conjunto corto","Verano 26"],["Joggin cargo","Promo 3x $99.990"],["Campera puffer","Importada"],["Bermuda NBA","Importada"]];
+    var html = "", pick = [S.fit+3, (S.fit+4)%6, (S.fit+5)%6];
+    for (var i=0;i<3;i++){
+      var n = nombres[Math.abs(pick[i])%6];
+      html += '<div class="card"><div class="ph"><i>Talle '+r.t+'</i></div><p>'+n[1]+'</p><b>'+n[0]+'</b></div>';
+    }
+    document.getElementById("cards").innerHTML = html;
+    document.getElementById("cant").textContent = 14 + r.i*4;
+  }
+
+  document.getElementById("otra").addEventListener("click", function(){ ir(1); });
+  bNext.addEventListener("click", function(){ ir(S.step + 1); });
+  bBack.addEventListener("click", function(){ ir(S.step - 1); });
+  document.getElementById("go").addEventListener("click", function(){
+    var r = talle();
+    alert("En la tienda real este botón abre:\n\nwessindumentaria.com/tu-talle/?Talle=" + r.t +
+          "\n\nEs el MISMO filtro que Wess ya usa hoy en Linea Teens (/linea-teens/?Talle=12). No hay que inventar nada. Llega filtrado con:\n· Talle " + r.t +
+          "\n· Pecho " + r.m.pecho + " cm  ·  Cintura " + r.m.cintura + " cm" +
+          "\n· Calce " + (S.fit<0?"ajustado":(S.fit>0?"oversize":"normal")));
+  });
+
+  function grupo(id, cb){
+    var box = document.getElementById(id);
+    box.addEventListener("click", function(e){
+      var o = e.target.closest(".opt"); if (!o) return;
+      var hijos = box.querySelectorAll(".opt");
+      for (var i=0;i<hijos.length;i++) hijos[i].classList.remove("sel");
+      o.classList.add("sel");
+      cb(o.dataset.v);
+      calcular(); hud();
+    });
+  }
+  grupo("op-gen", function(v){ S.gen = v; });
+  grupo("op-fit", function(v){ S.fit = +v; });
+
+  document.getElementById("r-alt").addEventListener("input", function(){
+    S.alt = +this.value; document.getElementById("b-alt").textContent = S.alt; calcular(); hud();
+  });
+  document.getElementById("r-pes").addEventListener("input", function(){
+    S.pes = +this.value; document.getElementById("b-pes").textContent = S.pes; calcular(); hud();
+  });
+
+  calcular();
+  Object.assign(cur, tgt);
+  /* atajo de demo: #paso4 abre directo la pantalla de resultado */
+  var atajo = (location.hash.match(/paso(\d)/) || [])[1];
+  ir(atajo ? +atajo : 0);
+  tick();
+})();
+</script>
+</body>
+</html>
