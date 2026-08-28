@@ -496,10 +496,11 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       SVG.appendChild(el);
       vivos.push({ el: el, seg: n.seg, fill: n.fill, prenda: false });
     });
-    /* la remera: trazos oscuros que arrancan debajo del cuello y no bajan de la cadera */
+    /* la remera: trazos oscuros, anchos, centrados entre el cuello y la cadera.
+       (sin el filtro de ancho se cuelan detalles de 17 px y el color no se ve) */
     vivos.forEach(function(v){
-      var b = v.el.getBBox();
-      v.prenda = oscuro(v.fill) && b.y > Y_HOMBRO - 70 && b.y < Y_CADERA;
+      var b = v.el.getBBox(), cy = b.y + b.height/2;
+      v.prenda = oscuro(v.fill) && b.width > 140 && cy > Y_HOMBRO && cy < Y_CADERA + 80;
     });
     gradsVivos = [].slice.call(SVG.querySelectorAll('linearGradient'));
     gradsOrig = gradsVivos.map(function(g){
