@@ -749,7 +749,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   function escalaDe(esc){ return esc === 'num' ? 'num' : esc === 'teens' ? 'teens' : 'letra'; }
 
   /* los valores viajan hacia su destino: el cuerpo cambia, no salta */
-  var VIS = { k:1, a:1 }, DEST = { k:1, a:1 }, animando = false, mirando = false;
+  var VIS = { k:1, a:1 }, DEST = { k:1, a:1 }, animando = false, mirando = false, reloj = 0;
   /* mira al panel cuando el cliente esta eligiendo, y al frente cuando avanza */
   function mirar(hacia){
     mirando = hacia;
@@ -776,6 +776,12 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     document.getElementById('v-cin').textContent = m.cintura;
     document.getElementById('v-cad').textContent = m.cadera;
     if (!animando){ animando = true; requestAnimationFrame(acercar); }
+    /* red de seguridad: si el navegador no corre los frames (pestana en segundo
+       plano, por ejemplo), el cuerpo se fija igual al destino. */
+    clearTimeout(reloj);
+    reloj = setTimeout(function(){
+      VIS.k = DEST.k; VIS.a = DEST.a; animando = false; dibujar();
+    }, 460);
   }
 
   function dibujar(){
