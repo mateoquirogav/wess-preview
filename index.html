@@ -58,7 +58,16 @@ body{min-height:100vh;overflow-x:hidden}
   82% {transform:translateY(10px) scale(1.05,.94)}
   100%{transform:translateY(0) scale(1,1)}
 }
-@media (prefers-reduced-motion:reduce){#gFig,#gCab{animation:none}}
+#gOjos{transform-box:fill-box;transform-origin:50% 50%;animation:pestanear 5.4s ease-in-out infinite}
+@keyframes pestanear{
+  0%,42%,100%{transform:scaleY(1)}
+  44%{transform:scaleY(.08)}
+  46%{transform:scaleY(1)}
+  70%{transform:scaleY(1)}
+  72%{transform:scaleY(.08)}
+  74%{transform:scaleY(1)}
+}
+@media (prefers-reduced-motion:reduce){#gFig,#gCab,#gOjos{animation:none}}
 .sombrapiso{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);width:168px;height:18px;border-radius:50%;background:rgba(40,40,50,.16);filter:blur(7px)}
 .hud{position:absolute;z-index:4;top:14px;left:14px;display:flex;flex-direction:column;gap:7px}
 .chip{background:rgba(255,255,255,.96);border-radius:15px;padding:7px 12px;min-width:106px;box-shadow:0 4px 14px rgba(30,30,40,.08);border:2px solid transparent;transition:border-color .3s,transform .3s}
@@ -493,11 +502,20 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   /* la gorra del unisex, en coordenadas de la ilustracion.
      La cabeza va de y=278 a y=477 con el centro en x=754. */
   var GORRA = [
-    { f:'#232122', d:'M 693 376 C 695 292 813 292 815 376 Z' },                 /* copa */
-    { f:'#2E2B2A', d:'M 684 374 Q 754 418 824 374 Q 754 394 684 374 Z' },       /* visera */
-    { f:'#1B1918', d:'M 693 366 L 815 366 L 815 378 L 693 378 Z' },             /* banda */
-    { f:'#E01E3C', d:'M 748 300 C 748 292 760 292 760 300 C 760 308 748 308 748 300 Z' } /* boton */
+    { f:'#232122', d:'M 693 336 C 695 248 813 248 815 336 Z' },                             /* copa */
+    { f:'#2E2B2A', d:'M 682 332 C 700 368 808 368 826 332 C 808 352 700 352 682 332 Z' },   /* visera */
+    { f:'#1B1918', d:'M 693 324 L 815 324 L 815 338 L 693 338 Z' },                          /* banda */
+    { f:'#E01E3C', d:'M 748 280 C 748 272 760 272 760 280 C 760 288 748 288 748 280 Z' }     /* boton */
   ];
+
+  /* La cara va dibujada por codigo, no generada: asi las tres siluetas tienen
+     exactamente la misma y los ojos son elementos propios que pestanean.
+     La cabeza de la ilustracion va de y=278 a y=477, centrada en x=754. */
+  var OJOS = [
+    { f:'#2B2726', d:'M 719 386 C 719 372 741 372 741 386 C 741 400 719 400 719 386 Z' },
+    { f:'#2B2726', d:'M 767 386 C 767 372 789 372 789 386 C 789 400 767 400 767 386 Z' }
+  ];
+  var BOCA = { f:'#2B2726', d:'M 736 425 C 743 437 765 437 772 425 C 765 431 743 431 736 425 Z' };
 
   var FIG = {}, SVG = document.getElementById('fig');
   ['h','m'].forEach(function(k){
@@ -551,6 +569,22 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     });
     gFig.appendChild(gCab);
     vivos.forEach(function(v){ if (v.cabeza) gCab.appendChild(v.el); });
+
+    /* la cara se monta al final, encima del craneo */
+    var bocaEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    bocaEl.setAttribute('fill', BOCA.f);
+    gCab.appendChild(bocaEl);
+    vivos.push({ el: bocaEl, seg: parsear(BOCA.d), fill: BOCA.f, prenda:false, cabeza:true });
+
+    var gOjos = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    gOjos.setAttribute('id', 'gOjos');
+    gCab.appendChild(gOjos);
+    OJOS.forEach(function(o){
+      var el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      el.setAttribute('fill', o.f);
+      gOjos.appendChild(el);
+      vivos.push({ el: el, seg: parsear(o.d), fill: o.f, prenda:false, cabeza:true });
+    });
     gradsVivos = [].slice.call(SVG.querySelectorAll('linearGradient'));
     gradsOrig = gradsVivos.map(function(g){
       return { x1:+g.getAttribute('x1'), y1:+g.getAttribute('y1'),
