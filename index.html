@@ -540,11 +540,18 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   function catActiva(){ return esTeens() ? TEENS_CAT : RUBROS[S.rubro].cat; }
   function nombreActivo(){ return esTeens() ? 'L\u00ednea Teens' : RUBROS[S.rubro].n; }
   /* Teens usa otro rango de cuerpo: con el de adulto salian medidas absurdas */
+  var modoCuerpo = null;
   function rangos(){
-    var teen = esTeens();
+    var teen = esTeens(), modo = teen ? 'teens' : 'adulto';
     var ra = document.getElementById('r-alt'), rp = document.getElementById('r-pes');
     ra.min = teen ? 130 : 148;  ra.max = teen ? 178 : 205;
     rp.min = teen ? 25  : 45;   rp.max = teen ? 75  : 140;
+    /* al cambiar de modo se cambia el cuerpo entero, no solo los topes */
+    if (modo !== modoCuerpo){
+      if (teen){ S.alt = 158; S.pes = 48; }
+      else if (modoCuerpo !== null){ S.alt = 175; S.pes = 72; }
+      modoCuerpo = modo;
+    }
     if (teen){ if (S.alt > 178) S.alt = 158; if (S.pes > 75) S.pes = 48; }
     else     { if (S.alt < 148) S.alt = 172; if (S.pes < 45) S.pes = 68; }
     ra.value = S.alt; rp.value = S.pes;
@@ -1034,10 +1041,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     });
   })();
   grupo('op-sil', function(v){
-    /* al entrar y al salir de Teens cambia el cuerpo entero, no solo el rango */
-    if (v === 'teens' && previo !== 'teens'){ S.alt = 158; S.pes = 48; }
-    else if (v !== 'teens' && previo === 'teens'){ S.alt = 175; S.pes = 72; }
-    previo = v; S.sil = v;
+    S.sil = v;
     armarPasos(); rangos(); montar(); dibujar(); pintar(); mirar(true);
   });
   grupo('op-fit', function(v){ S.fit = +v; pintar(); mirar(true); });
@@ -1101,7 +1105,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   var sm = hs.match(/sil(h|m|u|teens)/);
   if (sm){
     S.sil = sm[1];
-    if (S.sil === 'teens'){ S.alt = 158; S.pes = 48; previo = 'teens'; }
+    if (S.sil === 'teens'){ S.alt = 158; S.pes = 48; }
     document.querySelectorAll('#op-sil .opt').forEach(function(o){
       o.classList.toggle('sel', o.dataset.v === S.sil);
     });
