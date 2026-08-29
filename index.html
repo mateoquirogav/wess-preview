@@ -530,6 +530,18 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   function armarPasos(){
     FLUJO = ['rubro'].concat(RUBROS[S.rubro].pasos, ['res']);
   }
+  /* Teens usa otro rango de cuerpo: con el de adulto salian medidas absurdas */
+  function rangos(){
+    var teen = (S.rubro === 'teens');
+    var ra = document.getElementById('r-alt'), rp = document.getElementById('r-pes');
+    ra.min = teen ? 130 : 148;  ra.max = teen ? 178 : 205;
+    rp.min = teen ? 25  : 45;   rp.max = teen ? 75  : 140;
+    if (teen){ if (S.alt > 178) S.alt = 158; if (S.pes > 75) S.pes = 48; }
+    else     { if (S.alt < 148) S.alt = 172; if (S.pes < 45) S.pes = 68; }
+    ra.value = S.alt; rp.value = S.pes;
+    document.getElementById('b-alt').textContent = S.alt;
+    document.getElementById('b-pes').textContent = S.pes;
+  }
   var MAXSTEP = 5;
 
   /* ------- geometría de la ilustración ------- */
@@ -615,7 +627,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     { f:'#8E8E96', d:'M 747 236 L 761 236 L 761 258 L 747 258 Z' }                            /* eje */
   ];
   /* la pala va aparte: gira sola */
-  var PALA = { f:'#6C6C73', d:'M 668 232 C 668 222 840 222 840 232 C 840 242 668 242 668 232 Z' };
+  var PALA = { f:'#4A4A52', d:'M 648 231 C 660 219 848 219 860 231 C 848 243 660 243 648 231 Z' };
 
   var FIG = {}, SVG = document.getElementById('fig');
   ['h','m'].forEach(function(k){
@@ -1011,9 +1023,9 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       var o = e.target.closest('.rb'); if (!o) return;
       box.querySelectorAll('.rb').forEach(function(x){ x.classList.remove('sel'); });
       o.classList.add('sel'); S.rubro = o.dataset.v;
-      if (S.rubro === 'teens'){ S.alt = Math.min(S.alt, 165); document.getElementById('r-alt').value = S.alt;
-                                document.getElementById('b-alt').textContent = S.alt; }
-      armarPasos(); montar(); dibujar(); mirar(true); pintar();
+      if (S.rubro === 'teens'){ S.alt = 158; S.pes = 48; }
+      else if (S.alt < 148){ S.alt = 172; S.pes = 68; }
+      armarPasos(); rangos(); montar(); dibujar(); mirar(true); pintar();
     });
   })();
   grupo('op-sil', function(v){ S.sil = v; montar(); dibujar(); pintar(); mirar(true); });
@@ -1068,6 +1080,14 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   }
 
   var hs = location.hash;
+  var rm = hs.match(/rubro-(\w+)/);
+  if (rm && RUBROS[rm[1]]){
+    S.rubro = rm[1];
+    document.querySelectorAll('#op-rubro .rb').forEach(function(o){
+      o.classList.toggle('sel', o.dataset.v === S.rubro);
+    });
+    if (S.rubro === 'teens'){ S.alt = 158; S.pes = 48; }
+  }
   var sm = hs.match(/sil(h|m|u)/);
   if (sm){
     S.sil = sm[1];
@@ -1075,6 +1095,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       o.classList.toggle('sel', o.dataset.v === S.sil);
     });
   }
+  rangos();
   montar();
   VIS.k = 1; VIS.a = 1;
   var h = (hs.match(/paso(\d)/) || [])[1];
