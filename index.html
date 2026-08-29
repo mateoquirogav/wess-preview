@@ -58,6 +58,9 @@ body{min-height:100vh;overflow-x:hidden}
   82% {transform:translateY(10px) scale(1.05,.94)}
   100%{transform:translateY(0) scale(1,1)}
 }
+#gMirada{transition:transform .5s cubic-bezier(.3,1.2,.4,1)}
+#gMirada.der{transform:translateX(10px)}
+#fig{cursor:pointer}
 #gOjos{transform-box:fill-box;transform-origin:50% 50%;animation:pestanear 5.4s ease-in-out infinite}
 @keyframes pestanear{
   0%,42%,100%{transform:scaleY(1)}
@@ -109,6 +112,8 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
 .btn.pri{color:#fff;background:var(--rojo);box-shadow:0 8px 22px rgba(255,59,87,.32);flex:1}
 .btn.pri:hover{transform:translateY(-2px) scale(1.015);box-shadow:0 12px 28px rgba(255,59,87,.42)}
 .btn.gho{background:var(--crema);color:var(--gris)}.btn.gho:hover{background:var(--crema2);color:var(--tinta)}
+.btn.volver{background:var(--blanco);color:var(--tinta);border:2.5px solid var(--tinta)}
+.btn.volver:hover{background:var(--tinta);color:#fff;transform:translateY(-2px)}
 .btn[disabled]{opacity:.4;cursor:not-allowed}
 .res{text-align:center}
 .badge{position:relative;width:128px;height:128px;margin:0 auto 12px;display:grid;place-items:center;animation:pop .7s cubic-bezier(.2,1.6,.4,1) both}
@@ -236,8 +241,8 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
         </div>
         <div class="prendas" id="prendas"></div>
         <button class="btn pri" style="width:100%" id="go">Ver mis <span id="cant">24</span> prendas</button>
-        <p class="mini">Te lleva al cat&aacute;logo ya filtrado con tus medidas.</p>
-        <button class="btn gho" id="otra" style="width:100%;margin-top:10px">Cambiar mis medidas</button>
+        <p class="mini">Te lleva al cat&aacute;logo ya filtrado con tus medidas. Tambi&eacute;n pod&eacute;s tocar al personaje para empezar de nuevo.</p>
+        <button class="btn volver" id="otra" style="width:100%;margin-top:10px">&#8635; &nbsp;Volver a empezar</button>
       </div>
 
       <div class="nav" id="nav">
@@ -516,6 +521,16 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     { f:'#2B2726', d:'M 767 386 C 767 372 789 372 789 386 C 789 400 767 400 767 386 Z' }
   ];
   var BOCA = { f:'#2B2726', d:'M 736 425 C 743 437 765 437 772 425 C 765 431 743 431 736 425 Z' };
+  /* la cara esta dibujada para x=754. Cada ilustracion tiene el rostro en otro lugar. */
+  var CARA_CX = { h:0, m:-20, u:0 };
+  function correrCara(d, dx){
+    if (!dx) return d;
+    var i = 0;
+    return d.replace(/-?\d*\.?\d+/g, function(n){
+      var v = parseFloat(n), r = (i % 2 === 0) ? (v + dx) : v;
+      i++; return r.toFixed(1);
+    });
+  }
 
   var FIG = {}, SVG = document.getElementById('fig');
   ['h','m'].forEach(function(k){
@@ -571,20 +586,26 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     vivos.forEach(function(v){ if (v.cabeza) gCab.appendChild(v.el); });
 
     /* la cara se monta al final, encima del craneo */
+    var dx = CARA_CX[S.sil] || 0;
     var bocaEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     bocaEl.setAttribute('fill', BOCA.f);
     gCab.appendChild(bocaEl);
-    vivos.push({ el: bocaEl, seg: parsear(BOCA.d), fill: BOCA.f, prenda:false, cabeza:true });
+    vivos.push({ el: bocaEl, seg: parsear(correrCara(BOCA.d, dx)), fill: BOCA.f, prenda:false, cabeza:true });
 
+    /* dos grupos: uno mira, el otro pestanea. Si fuera uno solo se pisan los transform. */
+    var gMirada = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    gMirada.setAttribute('id', 'gMirada');
+    gCab.appendChild(gMirada);
     var gOjos = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     gOjos.setAttribute('id', 'gOjos');
-    gCab.appendChild(gOjos);
+    gMirada.appendChild(gOjos);
     OJOS.forEach(function(o){
       var el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       el.setAttribute('fill', o.f);
       gOjos.appendChild(el);
-      vivos.push({ el: el, seg: parsear(o.d), fill: o.f, prenda:false, cabeza:true });
+      vivos.push({ el: el, seg: parsear(correrCara(o.d, dx)), fill: o.f, prenda:false, cabeza:true });
     });
+    if (mirando) gMirada.classList.add('der');
     gradsVivos = [].slice.call(SVG.querySelectorAll('linearGradient'));
     gradsOrig = gradsVivos.map(function(g){
       return { x1:+g.getAttribute('x1'), y1:+g.getAttribute('y1'),
@@ -632,7 +653,13 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   }
 
   /* los valores viajan hacia su destino: el cuerpo cambia, no salta */
-  var VIS = { k:1, a:1 }, DEST = { k:1, a:1 }, animando = false;
+  var VIS = { k:1, a:1 }, DEST = { k:1, a:1 }, animando = false, mirando = false;
+  /* mira al panel cuando el cliente esta eligiendo, y al frente cuando avanza */
+  function mirar(hacia){
+    mirando = hacia;
+    var g = document.getElementById('gMirada');
+    if (g) g.classList.toggle('der', hacia);
+  }
   function acercar(){
     var listo = true;
     ['k','a'].forEach(function(p){
@@ -723,6 +750,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     bNext.textContent = (S.step === 3) ? 'Ver mi talle' : 'Siguiente';
     nav.style.display = (S.step === MAXSTEP) ? 'none' : 'flex';
     decir(FRASES[S.step]);
+    mirar(false);
     if (S.step === MAXSTEP) resultado();
     hud(); pintar();
   }
@@ -789,8 +817,8 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       o.classList.add('sel'); cb(o.dataset.v);
     });
   }
-  grupo('op-sil', function(v){ S.sil = v; montar(); dibujar(); pintar(); });
-  grupo('op-fit', function(v){ S.fit = +v; pintar(); });
+  grupo('op-sil', function(v){ S.sil = v; montar(); dibujar(); pintar(); mirar(true); });
+  grupo('op-fit', function(v){ S.fit = +v; pintar(); mirar(true); });
 
   bNext.addEventListener('click', function(){ ir(S.step + 1); });
   bBack.addEventListener('click', function(){ ir(S.step - 1); });
@@ -804,10 +832,15 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       '\n\nY ordenado por afinidad con tus medidas.');
   });
   document.getElementById('r-alt').addEventListener('input', function(){
-    S.alt = +this.value; document.getElementById('b-alt').textContent = S.alt; pintar();
+    S.alt = +this.value; document.getElementById('b-alt').textContent = S.alt; pintar(); mirar(true);
   });
   document.getElementById('r-pes').addEventListener('input', function(){
-    S.pes = +this.value; document.getElementById('b-pes').textContent = S.pes; pintar();
+    S.pes = +this.value; document.getElementById('b-pes').textContent = S.pes; pintar(); mirar(true);
+  });
+
+  document.getElementById('viz').addEventListener('click', function(e){
+    if (e.target.closest('.globo')) return;
+    ir(0);
   });
 
   var stage = document.getElementById('stage'), bg = ['#E8E8EC','#EFEFF2','#E2E2E7','#F1F1F4'];
