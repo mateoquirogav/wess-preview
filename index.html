@@ -1017,14 +1017,17 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       o.classList.add('sel'); cb(o.dataset.v);
     });
   }
+  var previo = S.rubro;
   (function(){
     var box = document.getElementById('op-rubro');
     box.addEventListener('click', function(e){
       var o = e.target.closest('.rb'); if (!o) return;
       box.querySelectorAll('.rb').forEach(function(x){ x.classList.remove('sel'); });
       o.classList.add('sel'); S.rubro = o.dataset.v;
-      if (S.rubro === 'teens'){ S.alt = 158; S.pes = 48; }
-      else if (S.alt < 148){ S.alt = 172; S.pes = 68; }
+      /* al entrar y al salir de Teens se cambia el cuerpo entero, no solo el rango */
+      if (S.rubro === 'teens' && previo !== 'teens'){ S.alt = 158; S.pes = 48; }
+      else if (S.rubro !== 'teens' && previo === 'teens'){ S.alt = 175; S.pes = 72; }
+      previo = S.rubro;
       armarPasos(); rangos(); montar(); dibujar(); mirar(true); pintar();
     });
   })();
