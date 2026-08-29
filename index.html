@@ -58,6 +58,8 @@ body{min-height:100vh;overflow-x:hidden}
   82% {transform:translateY(10px) scale(1.05,.94)}
   100%{transform:translateY(0) scale(1,1)}
 }
+#gPala{transform-box:fill-box;transform-origin:50% 50%;animation:helice 1.6s linear infinite}
+@keyframes helice{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 #gMirada{transition:transform .5s cubic-bezier(.3,1.2,.4,1)}
 #gMirada.der{transform:translateX(10px)}
 #fig{cursor:pointer}
@@ -140,11 +142,11 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
 .opts.cuatro .em{width:36px;height:36px;margin-bottom:5px}
 .opts.cuatro span{font-size:12.5px}
 .opts.cuatro small{font-size:10px}
-.hallazgo{background:var(--tinta);color:#fff;border-radius:18px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:baseline;gap:10px;justify-content:center}
+.hallazgo{background:var(--tinta);color:#fff;border-radius:18px;padding:16px 18px 14px;margin-bottom:14px}
+.hall-top{display:flex;align-items:baseline;gap:9px;justify-content:center}
 .hallazgo b{font-size:30px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
 .hallazgo span{font-size:13.5px;font-weight:700;opacity:.85}
-.aviso{margin-top:14px;background:var(--crema);border-radius:18px;padding:14px 16px}
-.aviso p{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--tinta)}
+.hall-sub{font-size:12.5px;font-weight:700;opacity:.8;margin:10px 0 10px;text-align:center}
 .btn.wa{width:100%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14.5px}
 .btn.wa:hover{background:#1DA851;transform:translateY(-2px)}
 .prendas{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:6px 0 18px}
@@ -277,19 +279,19 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
           <div><small>Cadera</small><b id="m-cad">98</b></div>
         </div>
         <div class="hallazgo" id="hallazgo">
-          <b id="cant">&mdash;</b>
-          <span id="hall-txt">prendas en tu talle</span>
-        </div>
-        <div class="prendas" id="prendas"></div>
-        <button class="btn pri" style="width:100%" id="go">Ver mis prendas</button>
-        <p class="mini">Te lleva al cat&aacute;logo ya filtrado con tus medidas.</p>
-        <div class="aviso">
-          <p>&iquest;Te avisamos cuando entren m&aacute;s prendas en tu talle?</p>
+          <div class="hall-top">
+            <b id="cant">&mdash;</b>
+            <span id="hall-txt">prendas en tu talle</span>
+          </div>
+          <p class="hall-sub">&iquest;Te avisamos cuando entren m&aacute;s en tu talle?</p>
           <button class="btn wa" id="wa">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1s-.5-.1-.7.1-.7.9-.9 1.1-.4.2-.7 0a8 8 0 0 1-2.4-1.5 9 9 0 0 1-1.6-2c-.2-.3 0-.5.1-.6l.5-.6.3-.5v-.5l-1-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4l-.6-.3z"/><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
             &nbsp;Avisame por WhatsApp
           </button>
         </div>
+        <div class="prendas" id="prendas"></div>
+        <button class="btn pri" style="width:100%" id="go">Ver mis prendas</button>
+        <p class="mini">Te lleva al cat&aacute;logo ya filtrado con tus medidas.</p>
         <button class="btn volver" id="otra" style="width:100%;margin-top:10px">&#8635; &nbsp;Volver a empezar</button>
       </div>
 
@@ -604,6 +606,17 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     });
   }
 
+  /* gorra de helice para Teens. Va sobre la misma cabeza (y 278-477, centro x 754). */
+  var HELI = [
+    { f:'#E01E3C', d:'M 693 336 C 695 248 813 248 815 336 Z' },                              /* copa */
+    { f:'#FFFFFF', d:'M 754 249 C 792 252 815 292 815 336 L 754 336 Z' },                     /* gajo claro */
+    { f:'#17171A', d:'M 682 332 C 700 368 808 368 826 332 C 808 352 700 352 682 332 Z' },     /* visera */
+    { f:'#17171A', d:'M 693 324 L 815 324 L 815 338 L 693 338 Z' },                           /* banda */
+    { f:'#8E8E96', d:'M 747 236 L 761 236 L 761 258 L 747 258 Z' }                            /* eje */
+  ];
+  /* la pala va aparte: gira sola */
+  var PALA = { f:'#6C6C73', d:'M 668 232 C 668 222 840 222 840 232 C 840 242 668 242 668 232 Z' };
+
   var FIG = {}, SVG = document.getElementById('fig');
   ['h','m'].forEach(function(k){
     var origen = document.getElementById(k === 'h' ? 'figH' : 'figM');
@@ -622,11 +635,16 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     var defs = origen.querySelector('defs');
     if (defs) SVG.appendChild(defs.cloneNode(true));
     /* dos grupos: el cuerpo se mece, la cabeza mira. La cabeza se detecta por altura. */
+    /* un grupo aparte para la escala: el transform CSS de la animacion vive en gFig */
+    var gEsc = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    gEsc.setAttribute('id', 'gEsc');
     var gFig = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     gFig.setAttribute('id', 'gFig');
     var gCab = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     gCab.setAttribute('id', 'gCab');
-    SVG.appendChild(gFig);
+    SVG.appendChild(gEsc);
+    gEsc.appendChild(gFig);
+    escalarCuerpo();
     vivos = [];
     FIG[clave].nodos.forEach(function(n){
       var el = n.src.cloneNode(false);
@@ -639,7 +657,15 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       var b = v.el.getBBox(), cy = b.y + b.height/2;
       v.prenda = oscuro(v.fill) && b.width > 140 && cy > Y_HOMBRO && cy < Y_CADERA + 80;
     });
-    if (S.sil === 'u'){
+    if (S.rubro === 'teens'){
+      HELI.forEach(function(g){
+        var el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        el.setAttribute('fill', g.f);
+        gFig.appendChild(el);
+        vivos.push({ el: el, seg: parsear(g.d), fill: g.f, prenda: false, cabeza:true });
+      });
+    }
+    if (S.sil === 'u' && S.rubro !== 'teens'){
       GORRA.forEach(function(g){
         var el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         el.setAttribute('fill', g.f);
@@ -678,12 +704,30 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       vivos.push({ el: el, seg: parsear(correrCara(o.d, dx)), fill: o.f, prenda:false, cabeza:true });
     });
     if (mirando) gMirada.classList.add('der');
+
+    if (S.rubro === 'teens'){
+      var gPala = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      gPala.setAttribute('id', 'gPala');
+      gCab.appendChild(gPala);
+      var pal = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      pal.setAttribute('fill', PALA.f);
+      gPala.appendChild(pal);
+      vivos.push({ el: pal, seg: parsear(PALA.d), fill: PALA.f, prenda:false, cabeza:true });
+    }
     gradsVivos = [].slice.call(SVG.querySelectorAll('linearGradient'));
     gradsOrig = gradsVivos.map(function(g){
       return { x1:+g.getAttribute('x1'), y1:+g.getAttribute('y1'),
                x2:+g.getAttribute('x2'), y2:+g.getAttribute('y2'),
                usa: g.getAttribute('gradientUnits') === 'userSpaceOnUse' };
     });
+  }
+
+  /* Teens: el mismo personaje, mas chico en las dos dimensiones, apoyado en el piso */
+  function escalarCuerpo(){
+    var g = document.getElementById('gEsc'); if (!g) return;
+    var k = (S.rubro === 'teens') ? 0.74 : 1;
+    g.setAttribute('transform', k === 1 ? ''
+      : 'translate(' + CXI + ',' + Y1 + ') scale(' + k + ') translate(' + (-CXI) + ',' + (-Y1) + ')');
   }
 
   var PASOS = 260;
@@ -969,7 +1013,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       o.classList.add('sel'); S.rubro = o.dataset.v;
       if (S.rubro === 'teens'){ S.alt = Math.min(S.alt, 165); document.getElementById('r-alt').value = S.alt;
                                 document.getElementById('b-alt').textContent = S.alt; }
-      armarPasos(); mirar(true); pintar();
+      armarPasos(); montar(); dibujar(); mirar(true); pintar();
     });
   })();
   grupo('op-sil', function(v){ S.sil = v; montar(); dibujar(); pintar(); mirar(true); });
@@ -977,7 +1021,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
 
   bNext.addEventListener('click', function(){ ir(S.step + 1); });
   bBack.addEventListener('click', function(){ ir(S.step - 1); });
-  document.getElementById('otra').addEventListener('click', function(){ ir(1); });
+  document.getElementById('otra').addEventListener('click', function(){ ir(0); });
   document.getElementById('wa').addEventListener('click', function(){
     var r = talle();
     var t = (r.esc === 'ambas') ? (r.arriba + ' arriba y ' + r.abajo + ' abajo') : ('talle ' + r.t);
