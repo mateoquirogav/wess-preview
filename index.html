@@ -128,7 +128,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
 .mset div{background:var(--crema);border-radius:16px;padding:12px 6px}
 .mset small{display:block;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gris);margin-bottom:2px}
 .mset b{font-size:18px;font-weight:900;font-variant-numeric:tabular-nums}
-.rubros{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rubros{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .rb{border:2.5px solid var(--linea);background:var(--blanco);border-radius:18px;padding:14px 6px 12px;text-align:center;cursor:pointer;
  transition:border-color .25s,transform .25s,box-shadow .25s,background .25s}
 .rb:hover{transform:translateY(-3px);box-shadow:var(--sombra)}
@@ -211,7 +211,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     <div class="panel">
       <div class="steps"><i id="s0"></i><i id="s1"></i><i id="s2"></i><i id="s3"></i><i id="s4"></i></div>
 
-      <div class="pane on" data-step="rubro">
+      <div class="pane" data-step="rubro">
         <div class="stepnum" data-num></div>
         <h3>&iquest;Qu&eacute; and&aacute;s buscando?</h3>
         <p class="sub">Cada prenda tiene su escala de talle. Con esto te pregunto solo lo que hace falta.</p>
@@ -219,19 +219,19 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
           <div class="rb sel" data-v="remeras"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M8 6.5 4.5 8.4l1.4 3.1 2-.9V20h8.2V10.6l2 .9 1.4-3.1L16 6.5a4 4 0 0 1-8 0z"/></svg><b>Remeras</b><small id="n-remeras">&nbsp;</small></div>
           <div class="rb" data-v="abrigos"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M7.6 6.2 4 8.2l1.6 3.4 2-.9V20h8.8v-9.3l2 .9L20 8.2l-3.6-2H14a2 2 0 0 1-4 0z"/><path d="M12 7.2V20"/></svg><b>Abrigos</b><small id="n-abrigos">buzos y camperas</small></div>
           <div class="rb" data-v="pantalones"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M7 4h10l-.6 8.4L15.8 20h-3l-.8-7.2-.8 7.2h-3L7.6 12.4z"/></svg><b>Pantalones</b><small id="n-pantalones">&nbsp;</small></div>
-          <div class="rb" data-v="teens"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M9 6.5 6.5 8l1 2.4 1.5-.6V20h6.2v-10.2l1.5.6 1-2.4L15 6.5a3 3 0 0 1-6 0z"/></svg><b>Teens</b><small id="n-teens">talles 12 a 18</small></div>
           <div class="rb" data-v="todo"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M4 5h7v7H4zM13 5h7v7h-7zM4 14h7v5H4zM13 14h7v5h-7z"/></svg><b>Ver todo</b><small id="n-todo">el paso a paso</small></div>
         </div>
       </div>
 
-      <div class="pane" data-step="sil">
+      <div class="pane on" data-step="sil">
         <div class="stepnum" data-num></div>
         <h3>&iquest;Para qui&eacute;n buscamos?</h3>
-        <p class="sub">Cambia la horma y la tabla de medidas que usamos.</p>
-        <div class="opts" id="op-sil">
+        <p class="sub">Cambia la horma, la escala de talles y el cuerpo del personaje.</p>
+        <div class="opts cuatro" id="op-sil">
           <div class="opt sel" data-v="h"><div class="em"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="2.8"/><path d="M8.6 9.8h6.8L16 15.4h-2V20.5h-4V15.4H8z"/></svg></div><span>Hombre</span></div>
           <div class="opt" data-v="m"><div class="em"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="5.5" r="2.8"/><path d="M12 8.5v4.5M8.4 20l1.7-6.5h3.8L15.6 20M9.6 13.5h4.8"/></svg></div><span>Mujer</span></div>
           <div class="opt" data-v="u"><div class="em"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5.5 9.5c0-2.6 2.9-4.4 6.5-4.4s6.5 1.8 6.5 4.4M4 9.5h16M12 12v8.5"/></svg></div><span>Unisex</span></div>
+          <div class="opt" data-v="teens"><div class="em"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="6" r="2.4"/><path d="M9.2 10h5.6l.7 4.6h-1.7V20h-3.6v-5.4H8.5z"/><path d="M12 3.6V2"/></svg></div><span>Teens</span><small>talles 12-18</small></div>
         </div>
       </div>
 
@@ -510,12 +510,12 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
 
   /* Cada rubro sabe su escala, su categoria y que le pregunta al cliente. */
   var RUBROS = {
-    remeras:   { n:'Remeras',    cat:'/remeras/',     esc:'letra', pasos:['sil','alt','pes','fit'] },
-    abrigos:   { n:'Abrigos',    cat:'/abrigos/',     esc:'letra', pasos:['sil','alt','pes','fit'] },
-    pantalones:{ n:'Pantalones', cat:'/pantalones/',  esc:'num',   pasos:['sil','alt','pes'] },
-    teens:     { n:'L\u00ednea Teens', cat:'/linea-teens/', esc:'teens', pasos:['alt','pes'] },
-    todo:      { n:'todo el cat\u00e1logo', cat:'/productos/', esc:'ambas', pasos:['sil','alt','pes','fit'] }
+    remeras:   { n:'Remeras',    cat:'/remeras/',    esc:'letra', pasos:['alt','pes','fit'] },
+    abrigos:   { n:'Abrigos',    cat:'/abrigos/',    esc:'letra', pasos:['alt','pes','fit'] },
+    pantalones:{ n:'Pantalones', cat:'/pantalones/', esc:'num',   pasos:['alt','pes'] },
+    todo:      { n:'todo el cat\u00e1logo', cat:'/productos/', esc:'ambas', pasos:['alt','pes','fit'] }
   };
+  var TEENS_CAT = '/linea-teens/';
 
   /* stock real de la tienda, medido sobre el filtro de talles (agosto 2026).
      Es el respaldo cuando no se puede consultar el catalogo en vivo. */
@@ -526,13 +526,22 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   };
 
   var S = { rubro:'remeras', sil:'h', alt:175, pes:72, fit:0, tono:0, step:0 };
+  var previo = 'h';
   var FLUJO = ['rubro','sil','alt','pes','fit','res'];
+  /* Primero para quien, despues que prenda. Teens es una persona: su linea es
+     una sola categoria, asi que ahi el paso de rubro no aporta y se saltea. */
   function armarPasos(){
-    FLUJO = ['rubro'].concat(RUBROS[S.rubro].pasos, ['res']);
+    FLUJO = (S.sil === 'teens')
+      ? ['sil','alt','pes','res']
+      : ['sil','rubro'].concat(RUBROS[S.rubro].pasos, ['res']);
   }
+  function esTeens(){ return S.sil === 'teens'; }
+  function escalaActiva(){ return esTeens() ? 'teens' : RUBROS[S.rubro].esc; }
+  function catActiva(){ return esTeens() ? TEENS_CAT : RUBROS[S.rubro].cat; }
+  function nombreActivo(){ return esTeens() ? 'L\u00ednea Teens' : RUBROS[S.rubro].n; }
   /* Teens usa otro rango de cuerpo: con el de adulto salian medidas absurdas */
   function rangos(){
-    var teen = (S.rubro === 'teens');
+    var teen = esTeens();
     var ra = document.getElementById('r-alt'), rp = document.getElementById('r-pes');
     ra.min = teen ? 130 : 148;  ra.max = teen ? 178 : 205;
     rp.min = teen ? 25  : 45;   rp.max = teen ? 75  : 140;
@@ -608,7 +617,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   ];
   var BOCA = { f:'#2B2726', d:'M 736 425 C 743 437 765 437 772 425 C 765 431 743 431 736 425 Z' };
   /* la cara esta dibujada para x=754. Cada ilustracion tiene el rostro en otro lugar. */
-  var CARA_CX = { h:0, m:-20, u:0 };
+  var CARA_CX = { h:0, m:-20, u:0, teens:0 };
   function correrCara(d, dx){
     if (!dx) return d;
     var i = 0;
@@ -669,7 +678,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       var b = v.el.getBBox(), cy = b.y + b.height/2;
       v.prenda = oscuro(v.fill) && b.width > 140 && cy > Y_HOMBRO && cy < Y_CADERA + 80;
     });
-    if (S.rubro === 'teens'){
+    if (esTeens()){
       HELI.forEach(function(g){
         var el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         el.setAttribute('fill', g.f);
@@ -677,7 +686,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
         vivos.push({ el: el, seg: parsear(g.d), fill: g.f, prenda: false, cabeza:true });
       });
     }
-    if (S.sil === 'u' && S.rubro !== 'teens'){
+    if (S.sil === 'u'){
       GORRA.forEach(function(g){
         var el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         el.setAttribute('fill', g.f);
@@ -717,7 +726,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     });
     if (mirando) gMirada.classList.add('der');
 
-    if (S.rubro === 'teens'){
+    if (esTeens()){
       var gPala = document.createElementNS('http://www.w3.org/2000/svg', 'g');
       gPala.setAttribute('id', 'gPala');
       gCab.appendChild(gPala);
@@ -737,7 +746,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   /* Teens: el mismo personaje, mas chico en las dos dimensiones, apoyado en el piso */
   function escalarCuerpo(){
     var g = document.getElementById('gEsc'); if (!g) return;
-    var k = (S.rubro === 'teens') ? 0.74 : 1;
+    var k = esTeens() ? 0.74 : 1;
     g.setAttribute('transform', k === 1 ? ''
       : 'translate(' + CXI + ',' + Y1 + ') scale(' + k + ') translate(' + (-CXI) + ',' + (-Y1) + ')');
   }
@@ -793,7 +802,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     return { t: String(TEENS[i]), i: i };
   }
   function talle(){
-    var m = medidas(), esc = RUBROS[S.rubro].esc;
+    var m = medidas(), esc = escalaActiva();
     var r;
     if (esc === 'num')        r = talleNum(m);
     else if (esc === 'teens') r = talleTeens();
@@ -886,8 +895,8 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   }
   var globo = document.getElementById('globo');
   var FRASES = [
-    '\u00a1Hola! \u00bfQu\u00e9 and\u00e1s buscando?',
-    '\u00a1Hola! Contame c\u00f3mo sos y te digo tu talle.',
+    '\u00a1Hola! \u00bfPara qui\u00e9n buscamos?',
+    '\u00bfQu\u00e9 and\u00e1s buscando?',
     'Mov\u00e9s la barra y mi figura crece.',
     'Ahora te doy tu forma. Sin vueltas.',
     'Mir\u00e1 c\u00f3mo me queda la remera con cada calce.',
@@ -906,12 +915,10 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     S.step = Math.max(0, Math.min(FLUJO.length - 1, n));
     var clave = FLUJO[S.step];
     panes.forEach(function(p){ p.classList.toggle('on', p.dataset.step === clave); });
-    var total = FLUJO.length - 2;                       /* sin contar rubro ni resultado */
     var barras = document.querySelectorAll('.steps i');
     barras.forEach(function(b, i){ b.classList.toggle('done', i <= S.step); });
     var num = document.querySelector('.pane.on [data-num]');
-    if (num) num.textContent = (clave === 'rubro') ? 'Empecemos'
-            : 'Paso ' + S.step + ' de ' + total;
+    if (num) num.textContent = 'Paso ' + (S.step + 1) + ' de ' + (FLUJO.length - 1);
     bBack.disabled = (S.step === 0);
     bNext.textContent = (S.step === FLUJO.length - 2) ? 'Ver mi talle' : 'Siguiente';
     nav.style.display = (clave === 'res') ? 'none' : 'flex';
@@ -938,8 +945,8 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
   }
 
   function urlDestino(r){
-    var cat = RUBROS[S.rubro].cat;
-    if (S.fit === 99 && RUBROS[S.rubro].esc !== 'ambas') return TIENDA + cat;
+    var cat = catActiva();
+    if (S.fit === 99 && escalaActiva() !== 'ambas') return TIENDA + cat;
     return TIENDA + cat + '?Talle=' + encodeURIComponent(r.t);
   }
 
@@ -972,7 +979,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     contar(r, function(n, tope){
       document.getElementById('cant').textContent = tope ? (n + '+') : n;
       document.getElementById('hall-txt').textContent =
-        'prendas encontradas en ' + (RUBROS[S.rubro].n === 'todo el cat\u00e1logo' ? 'tu talle' : RUBROS[S.rubro].n.toLowerCase()) +
+        'prendas encontradas en ' + (nombreActivo() === 'todo el cat\u00e1logo' ? 'tu talle' : nombreActivo().toLowerCase()) +
         (S.fit === 99 ? ' (sin filtrar por calce)' : '');
       document.getElementById('go').innerHTML = 'Ver ' + (tope ? 'las ' + n + '+' : 'las ' + n) + ' prendas';
     });
@@ -1017,21 +1024,22 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       o.classList.add('sel'); cb(o.dataset.v);
     });
   }
-  var previo = S.rubro;
   (function(){
     var box = document.getElementById('op-rubro');
     box.addEventListener('click', function(e){
       var o = e.target.closest('.rb'); if (!o) return;
       box.querySelectorAll('.rb').forEach(function(x){ x.classList.remove('sel'); });
       o.classList.add('sel'); S.rubro = o.dataset.v;
-      /* al entrar y al salir de Teens se cambia el cuerpo entero, no solo el rango */
-      if (S.rubro === 'teens' && previo !== 'teens'){ S.alt = 158; S.pes = 48; }
-      else if (S.rubro !== 'teens' && previo === 'teens'){ S.alt = 175; S.pes = 72; }
-      previo = S.rubro;
-      armarPasos(); rangos(); montar(); dibujar(); mirar(true); pintar();
+      armarPasos(); mirar(true); pintar();
     });
   })();
-  grupo('op-sil', function(v){ S.sil = v; montar(); dibujar(); pintar(); mirar(true); });
+  grupo('op-sil', function(v){
+    /* al entrar y al salir de Teens cambia el cuerpo entero, no solo el rango */
+    if (v === 'teens' && previo !== 'teens'){ S.alt = 158; S.pes = 48; }
+    else if (v !== 'teens' && previo === 'teens'){ S.alt = 175; S.pes = 72; }
+    previo = v; S.sil = v;
+    armarPasos(); rangos(); montar(); dibujar(); pintar(); mirar(true);
+  });
   grupo('op-fit', function(v){ S.fit = +v; pintar(); mirar(true); });
 
   bNext.addEventListener('click', function(){ ir(S.step + 1); });
@@ -1042,7 +1050,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     var t = (r.esc === 'ambas') ? (r.arriba + ' arriba y ' + r.abajo + ' abajo') : ('talle ' + r.t);
     var msg = 'Hola Wess! Us\u00e9 el probador y me dio ' + t + '.' +
       '\nMis medidas: pecho ' + r.m.pecho + ' cm, cintura ' + r.m.cintura + ' cm, cadera ' + r.m.cadera + ' cm.' +
-      '\nBusco: ' + RUBROS[S.rubro].n + '.' +
+      '\nBusco: ' + nombreActivo() + '.' +
       '\n\u00bfMe avisan cuando entren m\u00e1s prendas en mi talle?' +
       '\n' + urlDestino(r);
     window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(msg), '_blank');
@@ -1089,11 +1097,11 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     document.querySelectorAll('#op-rubro .rb').forEach(function(o){
       o.classList.toggle('sel', o.dataset.v === S.rubro);
     });
-    if (S.rubro === 'teens'){ S.alt = 158; S.pes = 48; }
   }
-  var sm = hs.match(/sil(h|m|u)/);
+  var sm = hs.match(/sil(h|m|u|teens)/);
   if (sm){
     S.sil = sm[1];
+    if (S.sil === 'teens'){ S.alt = 158; S.pes = 48; previo = 'teens'; }
     document.querySelectorAll('#op-sil .opt').forEach(function(o){
       o.classList.toggle('sel', o.dataset.v === S.sil);
     });
