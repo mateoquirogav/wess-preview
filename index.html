@@ -35,6 +35,30 @@ body{min-height:100vh;overflow-x:hidden}
  background:radial-gradient(ellipse 56% 32% at 50% 97%, rgba(60,60,70,.13), transparent 68%),linear-gradient(180deg,#FFFFFF,#EDEDF1);
  box-shadow:inset 0 -22px 40px rgba(40,40,50,.05), inset 0 1px 0 #fff}
 #fig{position:absolute;inset:20px 20px 30px;z-index:2;width:calc(100% - 40px);height:calc(100% - 50px)}
+/* --- el idle: se mece, respira y mira. Nunca se pausa con el cursor. --- */
+#gFig{transform-box:fill-box;transform-origin:50% 100%;animation:mecer 5.6s ease-in-out infinite}
+@keyframes mecer{
+  0%,100%{transform:rotate(-.55deg) translateY(0)}
+  50%    {transform:rotate(.55deg)  translateY(-7px)}
+}
+#gCab{transform-box:fill-box;transform-origin:50% 100%;animation:mirar 8s ease-in-out infinite}
+@keyframes mirar{
+  0%,100%{transform:rotate(0deg)}
+  16%{transform:rotate(2.6deg)}
+  30%{transform:rotate(1.1deg)}
+  52%{transform:rotate(-2.4deg)}
+  70%{transform:rotate(-.5deg)}
+}
+#gFig.festeja{animation:festejar 1.15s cubic-bezier(.28,.9,.32,1) 1}
+@keyframes festejar{
+  0%  {transform:translateY(0) scale(1,1)}
+  12% {transform:translateY(14px) scale(1.05,.93)}
+  38% {transform:translateY(-64px) scale(.96,1.05)}
+  62% {transform:translateY(-40px) scale(.98,1.02)}
+  82% {transform:translateY(10px) scale(1.05,.94)}
+  100%{transform:translateY(0) scale(1,1)}
+}
+@media (prefers-reduced-motion:reduce){#gFig,#gCab{animation:none}}
 .sombrapiso{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);width:168px;height:18px;border-radius:50%;background:rgba(40,40,50,.16);filter:blur(7px)}
 .hud{position:absolute;z-index:4;top:14px;left:14px;display:flex;flex-direction:column;gap:7px}
 .chip{background:rgba(255,255,255,.96);border-radius:15px;padding:7px 12px;min-width:106px;box-shadow:0 4px 14px rgba(30,30,40,.08);border:2px solid transparent;transition:border-color .3s,transform .3s}
@@ -492,11 +516,17 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     SVG.innerHTML = '';
     var defs = origen.querySelector('defs');
     if (defs) SVG.appendChild(defs.cloneNode(true));
+    /* dos grupos: el cuerpo se mece, la cabeza mira. La cabeza se detecta por altura. */
+    var gFig = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    gFig.setAttribute('id', 'gFig');
+    var gCab = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    gCab.setAttribute('id', 'gCab');
+    SVG.appendChild(gFig);
     vivos = [];
     FIG[clave].nodos.forEach(function(n){
       var el = n.src.cloneNode(false);
-      SVG.appendChild(el);
-      vivos.push({ el: el, seg: n.seg, fill: n.fill, prenda: false });
+      gFig.appendChild(el);
+      vivos.push({ el: el, seg: n.seg, fill: n.fill, prenda: false, cabeza:false });
     });
     /* la remera: trazos oscuros, anchos, centrados entre el cuello y la cadera.
        (sin el filtro de ancho se cuelan detalles de 17 px y el color no se ve) */
@@ -508,10 +538,19 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       GORRA.forEach(function(g){
         var el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         el.setAttribute('fill', g.f);
-        SVG.appendChild(el);
-        vivos.push({ el: el, seg: parsear(g.d), fill: g.f, prenda: false });
+        gFig.appendChild(el);
+        vivos.push({ el: el, seg: parsear(g.d), fill: g.f, prenda: false, cabeza:true });
       });
     }
+    /* lo que termina arriba del cuello es cabeza: se muda a su propio grupo */
+    vivos.forEach(function(v){
+      if (!v.cabeza){
+        var b = v.el.getBBox();
+        v.cabeza = (b.height > 0 && b.y + b.height < Y_HOMBRO - 40);
+      }
+    });
+    gFig.appendChild(gCab);
+    vivos.forEach(function(v){ if (v.cabeza) gCab.appendChild(v.el); });
     gradsVivos = [].slice.call(SVG.querySelectorAll('linearGradient'));
     gradsOrig = gradsVivos.map(function(g){
       return { x1:+g.getAttribute('x1'), y1:+g.getAttribute('y1'),
@@ -558,9 +597,32 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     return { t: ESCALA[i], i: i, m: m };
   }
 
+  /* los valores viajan hacia su destino: el cuerpo cambia, no salta */
+  var VIS = { k:1, a:1 }, DEST = { k:1, a:1 }, animando = false;
+  function acercar(){
+    var listo = true;
+    ['k','a'].forEach(function(p){
+      var d = DEST[p] - VIS[p];
+      if (Math.abs(d) > 0.0008){ VIS[p] += d * 0.18; listo = false; }
+      else VIS[p] = DEST[p];
+    });
+    dibujar();
+    if (!listo) requestAnimationFrame(acercar);
+    else animando = false;
+  }
   function pintar(){
-    var m = medidas(), k = m.k;
-    var a = 0.88 + (S.alt - 148) / 57 * 0.24;
+    var m = medidas();
+    DEST.k = m.k;
+    DEST.a = 0.88 + (S.alt - 148) / 57 * 0.24;
+    document.getElementById('v-alt').textContent = S.alt;
+    document.getElementById('v-pec').textContent = m.pecho;
+    document.getElementById('v-cin').textContent = m.cintura;
+    document.getElementById('v-cad').textContent = m.cadera;
+    if (!animando){ animando = true; requestAnimationFrame(acercar); }
+  }
+
+  function dibujar(){
+    var k = VIS.k, a = VIS.a;
     var T = tablaY(a), corr = Y1 - warpY(Y1, T);
     /* el calce solo toca la prenda */
     var holg = S.fit < 0 ? 0.975 : (S.fit > 0 ? 1.10 : 1.0);
@@ -592,10 +654,6 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       g.setAttribute('y2', (warpY(o.y2, T) + corr).toFixed(2));
     });
 
-    document.getElementById('v-alt').textContent = S.alt;
-    document.getElementById('v-pec').textContent = m.pecho;
-    document.getElementById('v-cin').textContent = m.cintura;
-    document.getElementById('v-cad').textContent = m.cadera;
   }
 
   /* ------- panel ------- */
@@ -665,6 +723,9 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     setTimeout(function(){ arc.style.strokeDashoffset = 346 - 346*(0.42 + r.i*0.09); }, 90);
     document.getElementById('cant').textContent = 14 + r.i*4;
     pintarPrendas(r.t);
+    var g = document.getElementById('gFig');
+    if (g){ g.classList.remove('festeja'); void g.offsetWidth; g.classList.add('festeja');
+            setTimeout(function(){ g.classList.remove('festeja'); }, 1300); }
     confeti();
   }
 
@@ -694,7 +755,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
       o.classList.add('sel'); cb(o.dataset.v);
     });
   }
-  grupo('op-sil', function(v){ S.sil = v; montar(); pintar(); });
+  grupo('op-sil', function(v){ S.sil = v; montar(); dibujar(); pintar(); });
   grupo('op-fit', function(v){ S.fit = +v; pintar(); });
 
   bNext.addEventListener('click', function(){ ir(S.step + 1); });
@@ -738,6 +799,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bor
     });
   }
   montar();
+  VIS.k = 1; VIS.a = 1;
   var h = (hs.match(/paso(\d)/) || [])[1];
   ir(h ? +h : 0);
 })();
